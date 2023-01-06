@@ -3,7 +3,7 @@ import { getFigureData, SetupUrlState, startListeningToParent } from '@figurl/in
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import { SetupTimeseriesSelection } from '@figurl/timeseries-views';
 import View from './View';
-import { defaultUnitSelection, UnitMetricSelectionContext, unitMetricSelectionReducer, UnitSelectionContext, unitSelectionReducer } from '@figurl/spike-sorting-views';
+import { defaultUnitSelection, SetupSortingCuration, UnitMetricSelectionContext, unitMetricSelectionReducer, UnitSelectionContext, unitSelectionReducer } from '@figurl/spike-sorting-views';
 import './localStyles.css';
 
 const urlSearchParams = new URLSearchParams(window.location.search)
@@ -63,12 +63,14 @@ function App() {
       <SetupTimeseriesSelection>
         <UnitSelectionContext.Provider value={{unitSelection, unitSelectionDispatch}}>
           <UnitMetricSelectionContext.Provider value={{unitMetricSelection, unitMetricSelectionDispatch}}>
-            <View
-              data={data}
-              opts={opts}
-              width={width - 10}
-              height={height - 5}
-            />
+            <SetupSortingCuration>
+              <View
+                data={data}
+                opts={opts}
+                width={width - 10}
+                height={height - 5}
+              />
+            </SetupSortingCuration>
           </UnitMetricSelectionContext.Provider>
         </UnitSelectionContext.Provider>
       </SetupTimeseriesSelection>

@@ -1,5 +1,5 @@
-# 8/31/22
-# https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://f2d35eb108e7c1a5f6ae0ba196d61bb9b7a889df&label=Raster%20plot%20example
+# 1/6/23
+# https://figurl.org/f?v=gs://figurl/figneuro-1&d=sha1://705ba1f48b9bae778ade2b8026d341165f09767e&label=Raster%20plot%20example
 
 from typing import List
 import numpy as np

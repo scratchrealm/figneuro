@@ -1,5 +1,5 @@
-# 8/31/22
-# https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://e62bd047d382fe031717714423110c182db1c0ff&label=Unit%20metrics%20graph%20example
+# 1/6/23
+# https://figurl.org/f?v=gs://figurl/figneuro-1&d=sha1://6c4f240cfdb83ed4b23b135bf9dcc7d95298acd3&label=Unit%20metrics%20graph%20example
 
 from typing import List
 import figneuro.spike_sorting.views as ssv

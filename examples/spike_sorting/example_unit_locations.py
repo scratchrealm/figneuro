@@ -1,5 +1,5 @@
-# 8/31/22
-# https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://251bb58553c39e9ec0e4af5ff1888f023e4597d9&label=Unit%20locations%20example
+# 1/6/23
+# https://figurl.org/f?v=gs://figurl/figneuro-1&d=sha1://06d6684207b201ad8e389329e29d0d2fc0f74193&label=Unit%20locations%20example
 
 from typing import List
 import numpy as np

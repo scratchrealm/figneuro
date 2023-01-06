@@ -1,5 +1,5 @@
-# 8/31/22
-# https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://a72e243cf44f94ecfd2fd9d828157e9ad05adce1&label=Cross%20correlograms%20example
+# 1/6/23
+# https://figurl.org/f?v=gs://figurl/figneuro-1&d=sha1://488594c6bc6433838cf44f06436b0d050ab7519a&label=Cross%20correlograms%20example
 
 from typing import List
 import figneuro.spike_sorting.views as ssv

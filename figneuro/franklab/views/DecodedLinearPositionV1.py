@@ -1,6 +1,6 @@
 from typing import List, Optional
 import numpy as np
-from ..View import View
+from .View import View
 
 class DecodedLinearPositionData(View):
     def __init__(self, *,

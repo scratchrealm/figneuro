@@ -1,5 +1,5 @@
-# 8/31/22
-# https://figurl.org/f?v=gs://figurl/spikesortingview-8&d=sha1://ad6178659260bf36733a8038acbc82d2020fa4ae&label=Average%20waveforms%20example
+# 1/6/23
+# https://figurl.org/f?v=gs://figurl/figneuro-1&d=sha1://7bb9c76f817ea563363fafe285e96a530041bd29&label=Average%20waveforms%20example
 
 from typing import List, Tuple
 import numpy as np

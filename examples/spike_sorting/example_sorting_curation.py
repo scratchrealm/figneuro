@@ -1,5 +1,5 @@
-# 10/10/22
-# https://figurl.org/f?v=gs://figurl/spikesortingview-10&d=sha1://bd702d032c8326d65484238ba3b2c505c421e095&label=Sorting%20curation%20example
+# 1/6/23
+# https://figurl.org/f?v=gs://figurl/figneuro-1&d=sha1://367364a4cb32d7e9801da027ae74940a71fd401f&label=Sorting%20curation%20example
 
 import kachery_cloud as kcl
 import figneuro.spike_sorting.views as ssv
