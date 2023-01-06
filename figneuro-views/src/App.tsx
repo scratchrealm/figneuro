@@ -1,8 +1,10 @@
 import { useWindowDimensions } from '@figurl/core-utils';
 import { getFigureData, SetupUrlState, startListeningToParent } from '@figurl/interface';
-import { useEffect, useMemo, useState } from 'react';
-import { SetupTimeseriesSelection } from './context-timeseries-selection';
+import { useEffect, useMemo, useReducer, useState } from 'react';
+import { SetupTimeseriesSelection } from '@figurl/timeseries-views';
 import View from './View';
+import { defaultUnitSelection, UnitMetricSelectionContext, unitMetricSelectionReducer, UnitSelectionContext, unitSelectionReducer } from '@figurl/spike-sorting-views';
+import './localStyles.css';
 
 const urlSearchParams = new URLSearchParams(window.location.search)
 const queryParams = Object.fromEntries(urlSearchParams.entries())
@@ -11,6 +13,9 @@ function App() {
   const [data, setData] = useState<any>()
   const [errorMessage, setErrorMessage] = useState<string>()
   const {width, height} = useWindowDimensions()
+
+  const [unitSelection, unitSelectionDispatch] = useReducer(unitSelectionReducer, defaultUnitSelection)
+  const [unitMetricSelection, unitMetricSelectionDispatch] = useReducer(unitMetricSelectionReducer, {})
 
   useEffect(() => {
     if (queryParams.test === '1') {
@@ -56,12 +61,16 @@ function App() {
   return (
     <SetupUrlState>
       <SetupTimeseriesSelection>
-        <View
-          data={data}
-          opts={opts}
-          width={width - 10}
-          height={height - 5}
-        />
+        <UnitSelectionContext.Provider value={{unitSelection, unitSelectionDispatch}}>
+          <UnitMetricSelectionContext.Provider value={{unitMetricSelection, unitMetricSelectionDispatch}}>
+            <View
+              data={data}
+              opts={opts}
+              width={width - 10}
+              height={height - 5}
+            />
+          </UnitMetricSelectionContext.Provider>
+        </UnitSelectionContext.Provider>
       </SetupTimeseriesSelection>
     </SetupUrlState>
   )

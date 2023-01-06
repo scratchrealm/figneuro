@@ -37,7 +37,7 @@ class TimeseriesGraph(View):
         hide_y_gridlines: Union[bool, None]=None,
         **kwargs
     ) -> None:
-        super().__init__('figneuro.TimeseriesGraph', **kwargs)
+        super().__init__('TimeseriesGraph', **kwargs)
         self._datasets = []
         self._series = []
         self._legend_opts = legend_opts

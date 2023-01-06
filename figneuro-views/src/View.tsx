@@ -1,6 +1,9 @@
 import { FunctionComponent, useMemo } from 'react';
 import loadView from './loadView';
 import { loadView as loadCoreView } from '@figurl/core-views';
+import { loadView as loadTimeseriesView } from '@figurl/timeseries-views'
+import { loadView as loadSpikeSortingView } from '@figurl/spike-sorting-views'
+import { loadView as loadFranklabView } from '@figurl/franklab-views'
 
 type Props = {
     data: any
@@ -13,7 +16,7 @@ const View: FunctionComponent<Props> = ({data, width, height, opts}) => {
     // It's important to memoize this
     // because validation of data can be slow
     const v = useMemo(() => {
-        const viewLoaders = [loadView, loadCoreView]
+        const viewLoaders = [loadView, loadCoreView, loadTimeseriesView, loadSpikeSortingView, loadFranklabView]
         for (let loadView of viewLoaders) {
             const v = loadView({data, width, height, opts, ViewComponent: View})
             if (v) return v
