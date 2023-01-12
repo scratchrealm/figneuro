@@ -21,7 +21,7 @@ const SpectrogramWidget: FunctionComponent<Props> = ({width, height, spectrogram
     const {visibleStartTimeSec, visibleEndTimeSec, setVisibleTimeRange} = useTimeRange()
 
 	useEffect(() => {
-		setVisibleTimeRange(0, Math.min(nTimepoints / samplingFrequency, 20))
+		setVisibleTimeRange(0, Math.min(nTimepoints / samplingFrequency, 120))
 	}, [nTimepoints, samplingFrequency, setVisibleTimeRange])
 
 	const margins = useTimeseriesMargins(timeseriesLayoutOpts)
