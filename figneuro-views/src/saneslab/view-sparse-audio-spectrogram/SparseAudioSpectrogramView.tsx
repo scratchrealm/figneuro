@@ -26,8 +26,10 @@ const SparseAudioSpectrogramView: FunctionComponent<Props> = ({data, width, heig
             const v = spectrogramValues[bb]
             const i = Math.floor(aa / numFrequencies)
             const j = aa % numFrequencies
-            sparseData[i].indices.push(j)
-            sparseData[i].values.push(v)
+            if (v) {
+                sparseData[i].indices.push(j)
+                sparseData[i].values.push(v)
+            }
         }
         return {
             numFrequencies,

@@ -17,10 +17,13 @@ class SparseAudioSpectrogram(View):
         Nt = self.spectrogram_data.shape[0]
         vec = self.spectrogram_data.flatten(order='C')
 
+        # np.uint16 may be desirable for very sparse data
+        indices_dtype = np.uint8
+
         print('Preparing compressed audio spectrogram')
-        values, indices_delta = _get_sparse_representation_of_vector(vec)    
+        values, indices_delta = _get_sparse_representation_of_vector(vec, max_delta=np.iinfo(indices_dtype).max)
         values = np.array(values, dtype=self.spectrogram_data.dtype)
-        indices_delta = np.array(indices_delta, dtype=np.uint8)
+        indices_delta = np.array(indices_delta, dtype=indices_dtype)
         print(f'Compression factor: {self.spectrogram_data.nbytes / (values.nbytes + indices_delta.nbytes)}')
 
         ret = {
@@ -36,7 +39,7 @@ class SparseAudioSpectrogram(View):
         return []
 
 @jit(nopython=True)
-def _get_sparse_representation_of_vector(vec: np.array):
+def _get_sparse_representation_of_vector(vec: np.array, max_delta: int):
     values = []
     indices_delta = []
     last_i = 0
@@ -44,7 +47,7 @@ def _get_sparse_representation_of_vector(vec: np.array):
     indices_delta.append(0)
     i = 1
     while i < len(vec):
-        if (vec[i] != 0) or (i - last_i == 255):
+        if (vec[i] != 0) or (i - last_i == max_delta):
             values.append(vec[i])
             indices_delta.append(i - last_i)
             last_i = i

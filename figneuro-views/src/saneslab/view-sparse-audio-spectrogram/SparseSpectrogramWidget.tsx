@@ -49,7 +49,7 @@ const SparseSpectrogramWidget: FunctionComponent<Props> = ({width, height, spars
 
 		const w0 = Math.max(1 / (i2 - i1) * rect.w, 1)
 		const h0 = 1 / numFrequencies * rect.h
-		for (let i = Math.max(i1, 0); i <= Math.min(i2, numTimepoints); i++) {
+		for (let i = Math.max(i1, 0); i <= Math.min(i2, numTimepoints - 1); i++) {
 			const indices = data[i].indices
 			const values = data[i].values
 			const x0 = rect.x + (i - i1) / (i2 - i1) * rect.w
