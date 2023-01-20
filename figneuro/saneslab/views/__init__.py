@@ -1,1 +1,1 @@
-from .AudioSpectrogram import AudioSpectrogram
+from .SparseAudioSpectrogram import SparseAudioSpectrogram

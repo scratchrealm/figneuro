@@ -2,6 +2,7 @@ import { ViewComponentProps } from "@figurl/core-views"
 import { FunctionComponent } from "react"
 import { isTimeseriesGraphViewData, TimeseriesGraphView } from "@figurl/timeseries-views"
 import { AudioSpectrogramView, isAudioSpectrogramViewData } from "./saneslab/view-audio-spectrogram"
+import { SparseAudioSpectrogramView, isSparseAudioSpectrogramViewData } from "./saneslab/view-sparse-audio-spectrogram"
 
 const loadView = (o: {data: any, width: number, height: number, opts: any, ViewComponent: FunctionComponent<ViewComponentProps>}) => {
     const {data, width, height} = o
@@ -9,7 +10,12 @@ const loadView = (o: {data: any, width: number, height: number, opts: any, ViewC
         return <TimeseriesGraphView data={data} width={width} height={height} />
     }
     else if (isAudioSpectrogramViewData(data)) {
+        // obsolete ??
         return <AudioSpectrogramView data={data} width={width} height={height} />
+    }
+    else if (isSparseAudioSpectrogramViewData(data)) {
+        // obsolete ??
+        return <SparseAudioSpectrogramView data={data} width={width} height={height} />
     }
     else return undefined
 }
