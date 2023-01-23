@@ -1,1 +1,2 @@
 from .SparseAudioSpectrogram import SparseAudioSpectrogram
+from .FiringRatesPlot import FiringRatesPlot, FiringRatesPlotItem
