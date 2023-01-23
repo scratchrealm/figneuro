@@ -1,6 +1,8 @@
 import { idToNum, useSelectedUnitIds } from '@figurl/spike-sorting-views'
 import { DefaultToolbarWidth, TimeScrollView, usePanelDimensions, useTimeRange, useTimeseriesMargins, useTimeseriesSelectionInitialization } from '@figurl/timeseries-views'
-import { FunctionComponent, useCallback, useMemo } from 'react'
+import { ToolbarItem } from '@figurl/timeseries-views/dist/ViewToolbar'
+import { FunctionComponent, useCallback, useMemo, useState } from 'react'
+import { FaArrowDown, FaArrowUp } from 'react-icons/fa'
 import { FiringRatesPlotViewData } from './FiringRatesPlotViewData'
 
 type Props = {
@@ -39,9 +41,9 @@ const FiringRatesPlotView: FunctionComponent<Props> = ({data, timeseriesLayoutOp
     const toolbarWidth = timeseriesLayoutOpts?.hideToolbar ? 0 : DefaultToolbarWidth
     const { panelWidth, panelHeight } = usePanelDimensions(width - toolbarWidth, height, panelCount, panelSpacing, margins)
 
-    const binSizeSec = 0.1
-    const smoothingRadius = 1
-    const numBins = useMemo(() => (Math.ceil(data.endTimeSec - data.startTimeSec) / binSizeSec), [data.startTimeSec, data.endTimeSec])
+    const [binSizeSec, setBinSizeSec] = useState(0.1)
+    const smoothingRadius = 0
+    const numBins = useMemo(() => (Math.ceil(data.endTimeSec - data.startTimeSec) / binSizeSec), [data.startTimeSec, data.endTimeSec, binSizeSec])
     const firingRatePlots: {
         unitId: number | string
         spikeCounts: number[]
@@ -64,7 +66,7 @@ const FiringRatesPlotView: FunctionComponent<Props> = ({data, timeseriesLayoutOp
                 spikeCounts: spikeCountsSmoothed
             }
         })
-    ), [data.plots, data.startTimeSec, numBins])
+    ), [data.plots, data.startTimeSec, numBins, binSizeSec])
 
     const paintPanel = useCallback((context: CanvasRenderingContext2D, props: PanelProps) => {
         if ((visibleStartTimeSec === undefined) || (visibleEndTimeSec === undefined)) return
@@ -73,7 +75,7 @@ const FiringRatesPlotView: FunctionComponent<Props> = ({data, timeseriesLayoutOp
             const x1 = (seg.t1 - visibleStartTimeSec) / (visibleEndTimeSec - visibleStartTimeSec) * panelWidth
             const x2 = (seg.t2 - visibleStartTimeSec) / (visibleEndTimeSec - visibleStartTimeSec) * panelWidth
             context.fillRect(
-                x1, 0, x2, Math.max(panelHeight, 1)
+                x1, 0, x2 - x1, Math.max(panelHeight, 1)
             )
         }
     }, [panelHeight, panelWidth, visibleStartTimeSec, visibleEndTimeSec])
@@ -106,7 +108,52 @@ const FiringRatesPlotView: FunctionComponent<Props> = ({data, timeseriesLayoutOp
             props: panelProps,
             paint: paintPanel
         }
-    })), [firingRatePlots, visibleStartTimeSec, visibleEndTimeSec, paintPanel, data.startTimeSec, numBins])
+    })), [firingRatePlots, visibleStartTimeSec, visibleEndTimeSec, paintPanel, data.startTimeSec, numBins, binSizeSec])
+
+    const binSizeActions: ToolbarItem[] = useMemo(() => {
+        const binSizes: number[] = [0.01, 0.02, 0.05, 0.08, 0.1, 0.2, 0.5, 0.8, 1, 2, 5, 8, 10, 20, 50, 80, 100]
+        function _handleBinSizeUp() {
+            const i = binSizes.findIndex(a => (a === binSizeSec))
+            if (i < 0) {
+                setBinSizeSec(binSizes[0])
+            }
+            else if (i + 1 < binSizes.length) {
+                setBinSizeSec(binSizes[i + 1])
+            }
+        }
+        function _handleBinSizeDown() {
+            const i = binSizes.findIndex(a => (a === binSizeSec))
+            if (i < 0) {
+                setBinSizeSec(binSizes[0])
+            }
+            else if (i - 1 >= 0) {
+                setBinSizeSec(binSizes[i - 1])
+            }
+        }
+        return [
+            {
+                type: 'button',
+                callback: _handleBinSizeUp,
+                title: 'Increase bin size',
+                icon: <FaArrowUp />,
+                keyCode: 38
+            },
+            {
+                type: 'button',
+                callback: _handleBinSizeDown,
+                title: 'Scale amplitude down [shift + mouse wheel]',
+                icon: <FaArrowDown />,
+                keyCode: 40
+            },
+            {
+                type: 'text',
+                title: 'Bin size (sec)',
+                content: binSizeSec,
+                contentSigFigs: 2
+            }
+        ]
+    }, [binSizeSec])
+    const actions = useMemo(() => {return { belowDefault: binSizeActions }}, [binSizeActions])
 
     return visibleStartTimeSec === undefined
     ? (<div>Loading...</div>)
@@ -116,6 +163,7 @@ const FiringRatesPlotView: FunctionComponent<Props> = ({data, timeseriesLayoutOp
             panels={panels}
             panelSpacing={panelSpacing}
             selectedPanelKeys={selectedUnitIds}
+            optionalActions={actions}
             timeseriesLayoutOpts={timeseriesLayoutOpts}
             width={width}
             height={height}
