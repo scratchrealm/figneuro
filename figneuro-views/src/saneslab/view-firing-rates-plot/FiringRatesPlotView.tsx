@@ -70,6 +70,10 @@ const FiringRatesPlotView: FunctionComponent<Props> = ({data, timeseriesLayoutOp
 
     const paintPanel = useCallback((context: CanvasRenderingContext2D, props: PanelProps) => {
         if ((visibleStartTimeSec === undefined) || (visibleEndTimeSec === undefined)) return
+        context.save()
+        context.beginPath()
+        context.rect(-1, 0, panelWidth, panelHeight + 2)
+        context.clip()
         for (let seg of props.segments) {
             context.fillStyle = firingRateToColor(seg.firingRate)
             const x1 = (seg.t1 - visibleStartTimeSec) / (visibleEndTimeSec - visibleStartTimeSec) * panelWidth
@@ -78,6 +82,7 @@ const FiringRatesPlotView: FunctionComponent<Props> = ({data, timeseriesLayoutOp
                 x1, 0, x2 - x1, Math.max(panelHeight, 1)
             )
         }
+        context.restore()
     }, [panelHeight, panelWidth, visibleStartTimeSec, visibleEndTimeSec])
 
     const panels = useMemo(() => (firingRatePlots.map(plot => {

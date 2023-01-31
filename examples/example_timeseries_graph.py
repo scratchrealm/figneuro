@@ -1,5 +1,5 @@
-# 1/5/22
-# https://figurl.org/f?v=gs://figurl/figneuro-1&d=sha1://d61d640348eebcc065f0af931c2dfe01698da34c&label=Timeseries%20graph%20example
+# 1/25/22
+# https://figurl.org/f?v=gs://figurl/figneuro-1&d=sha1://e6ca2d115aa3b92b6da77643f07349cb8f9b5546&label=Timeseries%20graph%20example
 
 import numpy as np
 import figneuro.views as vv

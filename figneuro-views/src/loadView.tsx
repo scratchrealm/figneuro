@@ -4,6 +4,7 @@ import { isTimeseriesGraphViewData, TimeseriesGraphView } from "@figurl/timeseri
 import { AudioSpectrogramView, isAudioSpectrogramViewData } from "./saneslab/view-audio-spectrogram"
 import { SparseAudioSpectrogramView, isSparseAudioSpectrogramViewData } from "./saneslab/view-sparse-audio-spectrogram"
 import { FiringRatesPlotView, isFiringRatesPlotViewData } from "./saneslab/view-firing-rates-plot"
+import { CameraView, isCameraViewData } from "./saneslab/view-camera"
 
 const loadView = (o: {data: any, width: number, height: number, opts: any, ViewComponent: FunctionComponent<ViewComponentProps>}) => {
     const {data, width, height} = o
@@ -20,6 +21,9 @@ const loadView = (o: {data: any, width: number, height: number, opts: any, ViewC
     }
     else if (isFiringRatesPlotViewData(data)) {
         return <FiringRatesPlotView data={data} width={width} height={height} />
+    }
+    else if (isCameraViewData(data)) {
+        return <CameraView data={data} width={width} height={height} />
     }
     else return undefined
 }
