@@ -16,7 +16,7 @@ type Props ={
 }
 
 const CameraViewArea: FunctionComponent<Props> = ({width, height, videoUri, videoWidth, videoHeight, samplingFrequency, onSelectRect}) => {
-	const {currentTime} = useTimeseriesSelection()
+	const {currentTime, setCurrentTime} = useTimeseriesSelection()
 	const W = videoWidth * height < videoHeight * width ? videoWidth * height / videoHeight : width
 	const H = videoWidth * height < videoHeight * width ? height : videoHeight * width / videoWidth
 	const rect = useMemo(() => ({
@@ -33,6 +33,7 @@ const CameraViewArea: FunctionComponent<Props> = ({width, height, videoUri, vide
 					width={rect.w}
 					height={rect.h}
 					timeSec={currentTime}
+					setTimeSec={setCurrentTime}
 					src={videoUri}
 					affineTransform={affineTransform}
 				/>

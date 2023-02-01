@@ -1,4 +1,3 @@
-import { useTimeseriesSelectionInitialization } from "@figurl/timeseries-views";
 import { FunctionComponent } from "react";
 import CameraViewArea from "./CameraViewArea";
 // import { colorForPointIndex } from "./PoseViewport";
@@ -22,8 +21,6 @@ const CameraWidget: FunctionComponent<Props> = ({width, height, videoUri, videoW
 	
 	const viewAreaWidth = width - legendWidth
 	const viewAreaHeight = height - topPanelHeight - 10
-
-	useTimeseriesSelectionInitialization(0, samplingFrequency * videoNumFrames)
 
 	// const {selectedVocalization, removePose, setBox, vocalizations, setPose, addVocalizationLabel} = useVocalizations()
 	// const [annotatingBox, setAnnotatingBox] = useState(false)

@@ -1,18 +1,23 @@
 import { getFileDataUrl } from "@figurl/interface";
 import { AffineTransform } from "@figurl/spike-sorting-views";
+import { PlayArrow, Stop } from "@mui/icons-material";
+import { FormControl, IconButton, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type Props ={
 	src: string
 	timeSec: number | undefined
+	setTimeSec: (t: number) => void
 	width: number
 	height: number
 	affineTransform: AffineTransform
 }
 
-const VideoFrameView: FunctionComponent<Props> = ({src, timeSec, width, height, affineTransform}) => {
+const VideoFrameView: FunctionComponent<Props> = ({src, timeSec, setTimeSec, width, height, affineTransform}) => {
 	const [srcUrl, setSrcUrl] = useState<string>()
 	const [seeking, setSeeking] = useState<boolean>(false)
+	const [playing, setPlaying] = useState<boolean>(false)
+	const [playbackRate, setPlaybackRate] = useState<number>(1)
 	const [refreshCode, setRefreshCode] = useState(0)
 	useEffect(() => {
 		if (src.startsWith('sha1://')) {
@@ -66,18 +71,76 @@ const VideoFrameView: FunctionComponent<Props> = ({src, timeSec, width, height, 
 	}, [video, seeking, refreshCode, handleDrawVideoFrame])
 	useEffect(() => {
 		if (!video) return
-		console.log('--- timeSec', timeSec)
+		video.playbackRate = playbackRate
+	}, [playbackRate, video])
+	useEffect(() => {
+		if (!video) return
+		if (playing) return // avoid a loop during playing!
 		if (timeSec !== undefined) {
 			setSeeking(true)
-			video.currentTime = timeSec
+			video.currentTime = timeSec || 0.0001 // for some reason it doesn't like currentTime=0 for initial display
 		}
-	}, [video, timeSec])
+	}, [video, timeSec, playing])
+	const bottomBarHeight = 30
+	useEffect(() => {
+		if (!video) return
+		if (!playing) {
+			video.pause()
+			return
+		}
+		video.play()
+		let canceled = false
+		function drawIt() {
+			if (canceled) return
+			if (!video) return
+			video && handleDrawVideoFrame(video)
+			setTimeout(() => {
+				drawIt()
+				if (video) {
+					setTimeSec(video.currentTime)
+				}
+			}, 30)
+		}
+		drawIt()
+		return () => {canceled = true}
+	}, [playing, handleDrawVideoFrame, video, setTimeSec])
+	const handlePlay = useCallback(() => {
+		setPlaying(true)
+	}, [])
+	const handleStop = useCallback(() => {
+		setPlaying(false)
+	}, [])
 	return (
-		<canvas
-			ref={canvasRef}
-			width={width}
-			height={height}
-		/>
+		<div style={{position: 'absolute', width, height}}>
+			<canvas
+				ref={canvasRef}
+				width={width}
+				height={height - bottomBarHeight}
+			/>
+			<div style={{position: 'absolute', width, height: bottomBarHeight, top: height - bottomBarHeight}}>
+				<IconButton title="Play video" disabled={playing} onClick={handlePlay}><PlayArrow /></IconButton>
+				<IconButton title="Stop video" disabled={!playing} onClick={handleStop}><Stop /></IconButton>
+				<PlaybackRateControl playbackRate={playbackRate} setPlaybackRate={setPlaybackRate} />
+			</div>
+		</div>
+	)
+}
+
+const PlaybackRateControl: FunctionComponent<{playbackRate: number, setPlaybackRate: (x: number) => void}> = ({playbackRate, setPlaybackRate}) => {
+	const handleChange = useCallback((e: SelectChangeEvent) => {
+		setPlaybackRate(parseFloat(e.target.value))
+	}, [setPlaybackRate])
+	return (
+		<FormControl size="small">
+			<Select onChange={handleChange} value={playbackRate + ''}>
+				<MenuItem key={0.25} value={0.25}>0.25x</MenuItem>
+				<MenuItem key={0.5} value={0.5}>0.5x</MenuItem>
+				<MenuItem key={1} value={1}>1x</MenuItem>
+				<MenuItem key={2} value={2}>2x</MenuItem>
+				<MenuItem key={4} value={4}>4x</MenuItem>
+				<MenuItem key={8} value={8}>8x</MenuItem>
+			</Select>
+		</FormControl>
 	)
 }
 
