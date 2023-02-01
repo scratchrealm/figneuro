@@ -133,6 +133,7 @@ const PlaybackRateControl: FunctionComponent<{playbackRate: number, setPlaybackR
 	return (
 		<FormControl size="small">
 			<Select onChange={handleChange} value={playbackRate + ''}>
+				<MenuItem key={0.1} value={0.1}>0.1x</MenuItem>
 				<MenuItem key={0.25} value={0.25}>0.25x</MenuItem>
 				<MenuItem key={0.5} value={0.5}>0.5x</MenuItem>
 				<MenuItem key={1} value={1}>1x</MenuItem>

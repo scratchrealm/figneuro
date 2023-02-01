@@ -1375,9 +1375,9 @@
     stream "npm:stream-browserify"
 
 "@figurl/spike-sorting-views@^0.2", "@figurl/spike-sorting-views@^0.2.0":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@figurl/spike-sorting-views/-/spike-sorting-views-0.2.3.tgz#e464e885ccefc87d02aa18d1e7e5ecfdcc525344"
-  integrity sha512-d5Lt7lGAjnDyOWVgYHSNdk9fg4YinOTh67EscVKt6hzU0SejmFQoJH+fe3nKFY2EAUUw7/OTPFmI2B7LdaIrsg==
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@figurl/spike-sorting-views/-/spike-sorting-views-0.2.4.tgz#7080af31d69fe9bd37af868b770d0741a5c0fdcc"
+  integrity sha512-bti1h1wqrAPWbOoEmDxzFFFfZPTokClVNDM4RGsHx/tDow2P09S/8Q8ZNfulPawhzAOOCMhHIn0ath1bsRLZXA==
   dependencies:
     "@figurl/core-views" "^0.1"
     "@figurl/interface" "^0.1"
@@ -3467,9 +3467,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001426, caniuse-lite@^1.0.30001449:
-  version "1.0.30001449"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001449.tgz#a8d11f6a814c75c9ce9d851dc53eb1d1dfbcd657"
-  integrity sha512-CPB+UL9XMT/Av+pJxCKGhdx+yg1hzplvFJQlJ2n68PyQGMz9L/E2zCyLdOL8uasbouTUgnPl+y0tccI/se+BEw==
+  version "1.0.30001450"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001450.tgz#022225b91200589196b814b51b1bbe45144cf74f"
+  integrity sha512-qMBmvmQmFXaSxexkjjfMvD5rnDL0+m+dUMZKoDYsGG8iZN29RuYh9eRoMvKsT6uMAWlyUUGDEQGJJYjzCIO9ew==
 
 case-sensitive-paths-webpack-plugin@^2.4.0:
   version "2.4.0"

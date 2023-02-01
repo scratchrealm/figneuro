@@ -1,5 +1,5 @@
-import { useTimeseriesSelection } from "@figurl/timeseries-views";
-import { FunctionComponent, useMemo } from "react";
+import { useTimeRange, useTimeseriesSelection } from "@figurl/timeseries-views";
+import { FunctionComponent, useCallback, useMemo } from "react";
 // import PoseViewport from "./PoseViewport";
 import useWheelZoom from "./useWheelZoom";
 import VideoFrameView from "./VideoFrameView";
@@ -17,6 +17,7 @@ type Props ={
 
 const CameraViewArea: FunctionComponent<Props> = ({width, height, videoUri, videoWidth, videoHeight, samplingFrequency, onSelectRect}) => {
 	const {currentTime, setCurrentTime} = useTimeseriesSelection()
+	const {visibleStartTimeSec, visibleEndTimeSec, setVisibleTimeRange} = useTimeRange()
 	const W = videoWidth * height < videoHeight * width ? videoWidth * height / videoHeight : width
 	const H = videoWidth * height < videoHeight * width ? height : videoHeight * width / videoWidth
 	const rect = useMemo(() => ({
@@ -26,6 +27,16 @@ const CameraViewArea: FunctionComponent<Props> = ({width, height, videoUri, vide
 		h: H
 	}), [W, H, width, height])
 	const {affineTransform, handleWheel} = useWheelZoom(rect.x, rect.y, rect.w, rect.h)
+	const handleSetTimeSec = useCallback((t: number) => {
+		setCurrentTime(t)
+		if ((visibleStartTimeSec !== undefined) && (visibleEndTimeSec !== undefined)) {
+			if ((t < visibleStartTimeSec) || (t > visibleEndTimeSec)) {
+				let delta = t - (visibleStartTimeSec + visibleEndTimeSec) / 2
+				if (visibleStartTimeSec + delta < 0) delta = -visibleStartTimeSec
+				setVisibleTimeRange(visibleStartTimeSec + delta, visibleEndTimeSec + delta)
+			}
+		}
+	}, [visibleStartTimeSec, visibleEndTimeSec, setVisibleTimeRange, setCurrentTime])
 	return (
 		<div style={{position: 'absolute', width, height}} onWheel={handleWheel}>
 			<div className="video-frame" style={{position: 'absolute', left: rect.x, top: rect.y, width: rect.w, height: rect.h}}>
@@ -33,7 +44,7 @@ const CameraViewArea: FunctionComponent<Props> = ({width, height, videoUri, vide
 					width={rect.w}
 					height={rect.h}
 					timeSec={currentTime}
-					setTimeSec={setCurrentTime}
+					setTimeSec={handleSetTimeSec}
 					src={videoUri}
 					affineTransform={affineTransform}
 				/>
