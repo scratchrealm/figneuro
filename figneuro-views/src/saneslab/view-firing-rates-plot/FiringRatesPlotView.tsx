@@ -1,13 +1,11 @@
 import { idToNum, useSelectedUnitIds } from '@figurl/spike-sorting-views'
 import { DefaultToolbarWidth, TimeScrollView, usePanelDimensions, useTimeRange, useTimeseriesMargins, useTimeseriesSelectionInitialization } from '@figurl/timeseries-views'
-import { ToolbarItem } from '@figurl/timeseries-views/dist/ViewToolbar'
 import { FunctionComponent, useCallback, useMemo, useState } from 'react'
-import { FaArrowDown, FaArrowUp } from 'react-icons/fa'
+import BottomToolbar, { Action } from './BottomToolbar'
 import { FiringRatesPlotViewData } from './FiringRatesPlotViewData'
 
 type Props = {
     data: FiringRatesPlotViewData
-    timeseriesLayoutOpts?: TimeseriesLayoutOpts
     width: number
     height: number
 }
@@ -28,13 +26,20 @@ type PanelProps = {
 
 const panelSpacing = 4
 
-const FiringRatesPlotView: FunctionComponent<Props> = ({data, timeseriesLayoutOpts, width, height}) => {
+const FiringRatesPlotView: FunctionComponent<Props> = ({data, width, height}) => {
     const {selectedUnitIds} = useSelectedUnitIds()
+
+    const timeseriesLayoutOpts = useMemo(() => (
+        {hideToolbar: data.hideToolbar}
+    ), [data.hideToolbar])
 
     useTimeseriesSelectionInitialization(data.startTimeSec, data.endTimeSec)
     const { visibleStartTimeSec, visibleEndTimeSec } = useTimeRange()
 
     const margins = useTimeseriesMargins(timeseriesLayoutOpts)
+
+    // tried the various color maps, but none seemed as good as the hsv one defined below
+    // const {colorMapFunction} = useColorMapFunction('legacy', 30)
 
     // Compute the per-panel pixel drawing area dimensions.
     const panelCount = useMemo(() => data.plots.length, [data.plots])
@@ -42,7 +47,10 @@ const FiringRatesPlotView: FunctionComponent<Props> = ({data, timeseriesLayoutOp
     const { panelWidth, panelHeight } = usePanelDimensions(width - toolbarWidth, height, panelCount, panelSpacing, margins)
 
     const [binSizeSec, setBinSizeSec] = useState(0.1)
-    const smoothingRadius = 0
+    const [brightness, setBrightness] = useState(0.5)
+
+    // const smoothingRadius = 2
+    const smoothingFactor = 0
     const numBins = useMemo(() => (Math.ceil(data.endTimeSec - data.startTimeSec) / binSizeSec), [data.startTimeSec, data.endTimeSec, binSizeSec])
     const firingRatePlots: {
         unitId: number | string
@@ -57,10 +65,18 @@ const FiringRatesPlotView: FunctionComponent<Props> = ({data, timeseriesLayoutOp
                 const b = Math.floor((t - data.startTimeSec) / binSizeSec)
                 spikeCounts[b] += 1
             }
-            const spikeCountsSmoothed: number[] = []
-            for (let i = 0; i < numBins; i++) {
-                spikeCountsSmoothed.push(computeMean(spikeCounts.slice(Math.max(i - smoothingRadius, 0), Math.min(i + smoothingRadius + 1, numBins))))
+            let spikeCountsSmoothed: number[] = []
+            if (smoothingFactor) {
+                let lastVal = 0
+                for (let i = 0; i < spikeCounts.length; i++) {
+                    lastVal = lastVal * smoothingFactor + spikeCounts[i] * (1 - smoothingFactor)
+                    spikeCountsSmoothed.push(lastVal)
+                }
             }
+            else spikeCountsSmoothed = spikeCounts
+            // for (let i = 0; i < numBins; i++) {
+            //     spikeCountsSmoothed.push(computeMean(spikeCounts.slice(Math.max(i - smoothingRadius, 0), Math.min(i + smoothingRadius + 1, numBins))))
+            // }
             return {
                 unitId: plot.unitId,
                 spikeCounts: spikeCountsSmoothed
@@ -70,12 +86,14 @@ const FiringRatesPlotView: FunctionComponent<Props> = ({data, timeseriesLayoutOp
 
     const paintPanel = useCallback((context: CanvasRenderingContext2D, props: PanelProps) => {
         if ((visibleStartTimeSec === undefined) || (visibleEndTimeSec === undefined)) return
+        const maxLevel = 20 * Math.exp(-5 * (brightness - 0.5))
         context.save()
         context.beginPath()
         context.rect(-1, 0, panelWidth, panelHeight + 2)
         context.clip()
         for (let seg of props.segments) {
-            context.fillStyle = firingRateToColor(seg.firingRate)
+            // context.fillStyle = colorMapFunction(seg.firingRate) // see comment above
+            context.fillStyle = firingRateToColor(seg.firingRate, maxLevel)
             const x1 = (seg.t1 - visibleStartTimeSec) / (visibleEndTimeSec - visibleStartTimeSec) * panelWidth
             const x2 = (seg.t2 - visibleStartTimeSec) / (visibleEndTimeSec - visibleStartTimeSec) * panelWidth
             context.fillRect(
@@ -83,7 +101,7 @@ const FiringRatesPlotView: FunctionComponent<Props> = ({data, timeseriesLayoutOp
             )
         }
         context.restore()
-    }, [panelHeight, panelWidth, visibleStartTimeSec, visibleEndTimeSec])
+    }, [panelHeight, panelWidth, visibleStartTimeSec, visibleEndTimeSec, brightness])
 
     const panels = useMemo(() => (firingRatePlots.map(plot => {
         const i1 = Math.max(0, Math.floor((visibleStartTimeSec || 0) / binSizeSec - 1))
@@ -115,73 +133,75 @@ const FiringRatesPlotView: FunctionComponent<Props> = ({data, timeseriesLayoutOp
         }
     })), [firingRatePlots, visibleStartTimeSec, visibleEndTimeSec, paintPanel, data.startTimeSec, numBins, binSizeSec])
 
-    const binSizeActions: ToolbarItem[] = useMemo(() => {
+    const binSizeActions: Action[] = useMemo(() => {
         const binSizes: number[] = [0.01, 0.02, 0.05, 0.08, 0.1, 0.2, 0.5, 0.8, 1, 2, 5, 8, 10, 20, 50, 80, 100]
-        function _handleBinSizeUp() {
-            const i = binSizes.findIndex(a => (a === binSizeSec))
-            if (i < 0) {
-                setBinSizeSec(binSizes[0])
-            }
-            else if (i + 1 < binSizes.length) {
-                setBinSizeSec(binSizes[i + 1])
-            }
-        }
-        function _handleBinSizeDown() {
-            const i = binSizes.findIndex(a => (a === binSizeSec))
-            if (i < 0) {
-                setBinSizeSec(binSizes[0])
-            }
-            else if (i - 1 >= 0) {
-                setBinSizeSec(binSizes[i - 1])
-            }
-        }
+        // function _handleBinSizeUp() {
+        //     const i = binSizes.findIndex(a => (a === binSizeSec))
+        //     if (i < 0) {
+        //         setBinSizeSec(binSizes[0])
+        //     }
+        //     else if (i + 1 < binSizes.length) {
+        //         setBinSizeSec(binSizes[i + 1])
+        //     }
+        // }
+        // function _handleBinSizeDown() {
+        //     const i = binSizes.findIndex(a => (a === binSizeSec))
+        //     if (i < 0) {
+        //         setBinSizeSec(binSizes[0])
+        //     }
+        //     else if (i - 1 >= 0) {
+        //         setBinSizeSec(binSizes[i - 1])
+        //     }
+        // }
         return [
             {
-                type: 'button',
-                callback: _handleBinSizeUp,
-                title: 'Increase bin size',
-                icon: <FaArrowUp />,
-                keyCode: 38
+                type: 'select',
+                label: 'Bin size (s):',
+                choices: binSizes.map(s => ({
+                    key: s,
+                    label: s
+                })),
+                value: binSizeSec,
+                onChange: v => setBinSizeSec(v as number)
             },
             {
-                type: 'button',
-                callback: _handleBinSizeDown,
-                title: 'Scale amplitude down [shift + mouse wheel]',
-                icon: <FaArrowDown />,
-                keyCode: 40
-            },
-            {
-                type: 'text',
-                title: 'Bin size (sec)',
-                content: binSizeSec,
-                contentSigFigs: 2
+                type: 'slider',
+                label: 'Color scale:',
+                min: 0,
+                max: 1,
+                step: 0.01,
+                value: brightness,
+                onChange: setBrightness
             }
         ]
-    }, [binSizeSec])
-    const actions = useMemo(() => {return { belowDefault: binSizeActions }}, [binSizeActions])
+    }, [binSizeSec, brightness])
+
+    const toolbarHeight = 25
 
     return visibleStartTimeSec === undefined
     ? (<div>Loading...</div>)
     : (
-        <TimeScrollView
-            margins={margins}
-            panels={panels}
-            panelSpacing={panelSpacing}
-            selectedPanelKeys={selectedUnitIds}
-            optionalActions={actions}
-            timeseriesLayoutOpts={timeseriesLayoutOpts}
-            width={width}
-            height={height}
-        />
+        <div>
+            <TimeScrollView
+                margins={margins}
+                panels={panels}
+                panelSpacing={panelSpacing}
+                selectedPanelKeys={selectedUnitIds}
+                timeseriesLayoutOpts={timeseriesLayoutOpts}
+                width={width}
+                height={height - toolbarHeight}
+            />
+            <BottomToolbar actions={binSizeActions} />
+        </div>
     )
 }
 
-function computeMean(a: number[]) {
-    return a.reduce((v, prev) => (v + prev), 0) / a.length
-}
+// function computeMean(a: number[]) {
+//     return a.reduce((v, prev) => (v + prev), 0) / a.length
+// }
 
-function firingRateToColor(f: number) {
-    const a = Math.min(1, f / 30)
+function firingRateToColor(f: number, maxLevel: number) {
+    const a = Math.min(1, f / maxLevel)
     return heatMapColorforValue(a, a)
 }
 

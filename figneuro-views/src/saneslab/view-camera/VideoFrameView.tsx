@@ -118,8 +118,8 @@ const VideoFrameView: FunctionComponent<Props> = ({src, timeSec, setTimeSec, wid
 				height={height - bottomBarHeight}
 			/>
 			<div style={{position: 'absolute', width, height: bottomBarHeight, top: height - bottomBarHeight}}>
-				<IconButton title="Play video" disabled={playing} onClick={handlePlay}><PlayArrow /></IconButton>
-				<IconButton title="Stop video" disabled={!playing} onClick={handleStop}><Stop /></IconButton>
+				{!playing && <IconButton title="Play video" disabled={playing} onClick={handlePlay}><PlayArrow /></IconButton>}
+				{playing && <IconButton title="Stop video" disabled={!playing} onClick={handleStop}><Stop /></IconButton>}
 				<PlaybackRateControl playbackRate={playbackRate} setPlaybackRate={setPlaybackRate} />
 			</div>
 		</div>

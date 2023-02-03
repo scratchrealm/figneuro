@@ -10,16 +10,18 @@ type Props ={
 		data: {indices: number[], values: number[]}[]
 		samplingFrequency: number
 	}
+	hideToolbar?: boolean
 }
 
-const timeseriesLayoutOpts: any = {}
 const panelSpacing = 4
 type PanelProps = {}
 
-const SparseSpectrogramWidget: FunctionComponent<Props> = ({width, height, sparseSpectrogram}) => {
+const SparseSpectrogramWidget: FunctionComponent<Props> = ({width, height, sparseSpectrogram, hideToolbar}) => {
 	const {numFrequencies, numTimepoints, data, samplingFrequency} = sparseSpectrogram
 	useTimeseriesSelectionInitialization(0, numTimepoints / samplingFrequency)
     const {visibleStartTimeSec, visibleEndTimeSec, setVisibleTimeRange} = useTimeRange()
+
+	const timeseriesLayoutOpts = useMemo(() => ({hideToolbar, hideTimeAxis: undefined}), [hideToolbar])
 
 	useEffect(() => {
 		setVisibleTimeRange(0, Math.min(numTimepoints / samplingFrequency, 120))

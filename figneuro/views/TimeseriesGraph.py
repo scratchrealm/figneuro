@@ -35,6 +35,7 @@ class TimeseriesGraph(View):
         y_range: Union[List[float], None]=None,
         hide_x_gridlines: Union[bool, None]=None,
         hide_y_gridlines: Union[bool, None]=None,
+        hide_toolbar: bool=False,
         **kwargs
     ) -> None:
         super().__init__('TimeseriesGraph', **kwargs)
@@ -46,6 +47,7 @@ class TimeseriesGraph(View):
         self._time_offset = None
         self._hide_x_gridlines = hide_x_gridlines
         self._hide_y_gridlines = hide_y_gridlines
+        self._hide_toolbar = hide_toolbar
     def add_line_series(self, *,
             name: str,
             t: np.array,
@@ -115,6 +117,8 @@ class TimeseriesGraph(View):
                 'hideX': True if self._hide_x_gridlines is True else False,
                 'hideY': True if self._hide_y_gridlines is True else False
             }
+        if self._hide_toolbar:
+            ret['hideToolbar'] = self._hide_toolbar
         return ret
     def register_task_handlers(self, task_backend):
         return super().register_task_handlers(task_backend)

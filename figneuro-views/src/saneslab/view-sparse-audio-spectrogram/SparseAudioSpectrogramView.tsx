@@ -9,7 +9,7 @@ type Props = {
 }
 
 const SparseAudioSpectrogramView: FunctionComponent<Props> = ({data, width, height}) => {
-	const {samplingFrequency, numFrequencies, numTimepoints, spectrogramValues, spectrogramIndicesDelta} = data
+	const {samplingFrequency, numFrequencies, numTimepoints, spectrogramValues, spectrogramIndicesDelta, hideToolbar} = data
     const sparseSpectrogram: {
         numFrequencies: number
         numTimepoints: number
@@ -43,6 +43,7 @@ const SparseAudioSpectrogramView: FunctionComponent<Props> = ({data, width, heig
             width={width}
             height={height}
             sparseSpectrogram={sparseSpectrogram}
+            hideToolbar={hideToolbar}
         />
     )
 }

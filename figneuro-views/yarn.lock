@@ -284,9 +284,9 @@
     js-tokens "^4.0.0"
 
 "@babel/parser@^7.1.0", "@babel/parser@^7.14.7", "@babel/parser@^7.20.13", "@babel/parser@^7.20.7":
-  version "7.20.13"
-  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.20.13.tgz#ddf1eb5a813588d2fb1692b70c6fce75b945c088"
-  integrity sha512-gFDLKMfpiXCsjt4za2JA9oTMn70CeseCehb11kRZgvd7+F67Hih3OHOK24cRrWECJ/ljfPGac6ygXAs/C8kIvw==
+  version "7.20.15"
+  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.20.15.tgz#eec9f36d8eaf0948bb88c87a46784b5ee9fd0c89"
+  integrity sha512-DI4a1oZuf8wC+oAJA9RW6ga3Zbe8RZFt7kD9i4qAspz3I/yHet1VvC3DiSy/fsUvv5pvJuNPh0LPOdCcqinDPg==
 
 "@babel/plugin-bugfix-safari-id-destructuring-collision-in-function-expression@^7.18.6":
   version "7.18.6"
@@ -615,9 +615,9 @@
     "@babel/helper-plugin-utils" "^7.18.6"
 
 "@babel/plugin-transform-block-scoping@^7.20.2":
-  version "7.20.14"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-block-scoping/-/plugin-transform-block-scoping-7.20.14.tgz#2f5025f01713ba739daf737997308e0d29d1dd75"
-  integrity sha512-sMPepQtsOs5fM1bwNvuJJHvaCfOEQfmc01FGw0ELlTpTJj5Ql/zuNRRldYhAPys4ghXdBIQJbRVYi44/7QflQQ==
+  version "7.20.15"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-block-scoping/-/plugin-transform-block-scoping-7.20.15.tgz#3e1b2aa9cbbe1eb8d644c823141a9c5c2a22392d"
+  integrity sha512-Vv4DMZ6MiNOhu/LdaZsT/bsLRxgL94d269Mv4R/9sp6+Mp++X/JqypZYypJXLlM4mlL352/Egzbzr98iABH1CA==
   dependencies:
     "@babel/helper-plugin-utils" "^7.20.2"
 
@@ -1318,9 +1318,9 @@
     object-hash "^3.0.0"
 
 "@figurl/core-views@^0.1":
-  version "0.1.13"
-  resolved "https://registry.yarnpkg.com/@figurl/core-views/-/core-views-0.1.13.tgz#6a173a2cc395af4287838cf87bbb0cee3f0a65cf"
-  integrity sha512-dfKl2dX2ax0VHONuHUUikoXktNWzAzcuhLsuLj1okoltI4OljHMJ5MPqAPQlYWAmtX40Y4V2bjmFQWWXxBLU3A==
+  version "0.1.14"
+  resolved "https://registry.yarnpkg.com/@figurl/core-views/-/core-views-0.1.14.tgz#acd4c513252d15fa42c23b4dcbe0551f69c94e1b"
+  integrity sha512-mN9HKTiTHUDwdjgoCzawiIEANP4lBmtuzLYHsemxAzRUdDrMfOmvJOzE5KMgc14Am9PlJswD/Y91sdwKxZ9tow==
   dependencies:
     "@figurl/core-utils" "^0.1"
     "@figurl/interface" "^0.1"
@@ -1342,9 +1342,9 @@
     stream "npm:stream-browserify"
 
 "@figurl/franklab-views@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@figurl/franklab-views/-/franklab-views-0.2.1.tgz#9ff3affc2d22e3ef51c642ea85197b0bd28a825c"
-  integrity sha512-u6cVgoAgjZjrtntrGR7g4QHINJoPXZ5P8ObOcpz5EHTp+P5qlhptHlgKa1AmUJElNiVw6EnyW6Kf5JQ4WUGMTw==
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@figurl/franklab-views/-/franklab-views-0.2.2.tgz#ced79b7be57ce607d1a4a11f8bf1eb053b8ed119"
+  integrity sha512-dzMQuXCLNBW21MuD2cSaIzYx1oio5JC5cMkmz020eY6hfC15eKcV3Pk7/X9EzTv6+Onw9ytjiLPINoKHnNxZUQ==
   dependencies:
     "@figurl/core-utils" "^0.1"
     "@figurl/core-views" "^0.1"
@@ -1375,9 +1375,9 @@
     stream "npm:stream-browserify"
 
 "@figurl/spike-sorting-views@^0.2", "@figurl/spike-sorting-views@^0.2.0":
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/@figurl/spike-sorting-views/-/spike-sorting-views-0.2.4.tgz#7080af31d69fe9bd37af868b770d0741a5c0fdcc"
-  integrity sha512-bti1h1wqrAPWbOoEmDxzFFFfZPTokClVNDM4RGsHx/tDow2P09S/8Q8ZNfulPawhzAOOCMhHIn0ath1bsRLZXA==
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@figurl/spike-sorting-views/-/spike-sorting-views-0.2.5.tgz#f27991a289814eab89f94ee63455be64a44e86a8"
+  integrity sha512-4x1jQz5woUdeIAeUqJmOwIudZUyg3hQssLMMoLHiWzGQEgx/3r+gK9lwQaZWHxg2NE+quIvDMYnfHIx7xrz5sA==
   dependencies:
     "@figurl/core-views" "^0.1"
     "@figurl/interface" "^0.1"
@@ -1394,9 +1394,9 @@
     react-sizeme "^3.0.2"
 
 "@figurl/timeseries-views@^0.2", "@figurl/timeseries-views@^0.2.1":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@figurl/timeseries-views/-/timeseries-views-0.2.5.tgz#d1192ffe6cb8f201f233f553b58c92f4d140e28c"
-  integrity sha512-vGsE56GRAZimSEg1bdYCo4bDkwWYxLHV10IPcWnP+PWp48v9ssDoYtcXaxtXrg4sF3WePZ37oLbWUQGquMTUxA==
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/@figurl/timeseries-views/-/timeseries-views-0.2.6.tgz#5c8a76bd26e0ee2277f10e2b7daa89b821459312"
+  integrity sha512-oHsvrNAGnLT6gxotJtlXzX+DWHVwoiywMkX7mQAGep3A7JRs8UOA0tWkGdkXf9nkTPQKD+5n8XaQ7SincKc4TA==
   dependencies:
     "@figurl/core-views" "^0.1"
     "@figurl/interface" "^0.1"
@@ -2222,9 +2222,9 @@
     "@types/estree" "*"
 
 "@types/eslint@*", "@types/eslint@^7.29.0 || ^8.4.1":
-  version "8.4.10"
-  resolved "https://registry.yarnpkg.com/@types/eslint/-/eslint-8.4.10.tgz#19731b9685c19ed1552da7052b6f668ed7eb64bb"
-  integrity sha512-Sl/HOqN8NKPmhWo2VBEPm0nvHnu2LL3v9vKo8MEq0EtbJ4eVzGPl41VNPvn5E1i5poMk4/XD8UriLHpJvEP/Nw==
+  version "8.21.0"
+  resolved "https://registry.yarnpkg.com/@types/eslint/-/eslint-8.21.0.tgz#21724cfe12b96696feafab05829695d4d7bd7c48"
+  integrity sha512-35EhHNOXgxnUgh4XCJsGhE7zdlDhYDN/aMG6UbkByCFFNgQ7b3U+uVoqBpicFydR8JEfgdjCF7SJ7MiJfzuiTA==
   dependencies:
     "@types/estree" "*"
     "@types/json-schema" "*"
@@ -4417,9 +4417,9 @@ ejs@^3.1.6:
     jake "^10.8.5"
 
 electron-to-chromium@^1.4.284:
-  version "1.4.284"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.284.tgz#61046d1e4cab3a25238f6bf7413795270f125592"
-  integrity sha512-M8WEXFuKXMYMVr45fo8mq0wUrrJHheiKZf6BArTKk9ZBYCKJEOU5H8cdWgDT+qCVZf7Na4lVUaZsA+h6uA9+PA==
+  version "1.4.285"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.285.tgz#803a776dc24ce1bf5c2752630e0443d51002b95d"
+  integrity sha512-47o4PPgxfU1KMNejz+Dgaodf7YTcg48uOfV1oM6cs3adrl2+7R+dHkt3Jpxqo0LRCbGJEzTKMUt0RdvByb/leg==
 
 element-resize-detector@^1.2.2:
   version "1.2.4"

@@ -28,18 +28,21 @@ class RasterPlot(View):
         start_time_sec: float,
         end_time_sec: float,
         plots: List[RasterPlotItem],
+        hide_toolbar: bool=False,
         **kwargs
     ) -> None:
         super().__init__('RasterPlot', **kwargs)
         self._start_time_sec = start_time_sec
         self._end_time_sec = end_time_sec
         self._plots = plots
+        self._hide_toolbar = hide_toolbar
     def to_dict(self) -> dict:
         ret = {
             'type': self.type,
             'startTimeSec': self._start_time_sec,
             'endTimeSec': self._end_time_sec,
-            'plots': [a.to_dict() for a in self._plots]
+            'plots': [a.to_dict() for a in self._plots],
+            'hideToolbar': self._hide_toolbar
         }
         return ret
     def child_views(self) -> List[View]:

@@ -1,4 +1,4 @@
-import { isArrayOf, isEqualTo, isNumber, isOneOf, isString, validateObject } from "@figurl/core-utils"
+import { isArrayOf, isEqualTo, isNumber, isOneOf, isString, validateObject, optional, isBoolean } from "@figurl/core-utils"
 
 type FRPlotData = {
     unitId: number | string
@@ -17,6 +17,7 @@ export type FiringRatesPlotViewData = {
     startTimeSec: number
     endTimeSec: number
     plots: FRPlotData[]
+    hideToolbar?: boolean
 }
 
 export const isFiringRatesPlotViewData = (x: any): x is FiringRatesPlotViewData => {
@@ -24,6 +25,7 @@ export const isFiringRatesPlotViewData = (x: any): x is FiringRatesPlotViewData 
         type: isEqualTo('saneslab.FiringRatesPlot'),
         startTimeSec: isNumber,
         endTimeSec: isNumber,
-        plots: isArrayOf(isFRPlotData)
+        plots: isArrayOf(isFRPlotData),
+        hideToolbar: optional(isBoolean)
     })
 }

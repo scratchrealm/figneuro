@@ -1,4 +1,4 @@
-import { isEqualTo, isNumber, validateObject } from "@figurl/core-utils"
+import { isEqualTo, isNumber, validateObject, optional, isBoolean } from "@figurl/core-utils"
 
 export type SparseAudioSpectrogramViewData = {
     type: 'saneslab.AudioSpectrogram',
@@ -6,7 +6,8 @@ export type SparseAudioSpectrogramViewData = {
     numTimepoints: number,
     samplingFrequency: number,
     spectrogramValues: number[],
-    spectrogramIndicesDelta: number[]
+    spectrogramIndicesDelta: number[],
+    hideToolbar?: boolean
 }
 
 export const isSparseAudioSpectrogramViewData = (x: any): x is SparseAudioSpectrogramViewData => {
@@ -16,6 +17,7 @@ export const isSparseAudioSpectrogramViewData = (x: any): x is SparseAudioSpectr
         numTimepoints: isNumber,
         samplingFrequency: isNumber,
         spectrogramValues: () => (true),
-        spectrogramIndicesDelta: () => (true)
+        spectrogramIndicesDelta: () => (true),
+        hideToolbar: optional(isBoolean)
     })
 }

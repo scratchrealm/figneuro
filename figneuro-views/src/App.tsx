@@ -5,6 +5,7 @@ import { SetupTimeseriesSelection } from '@figurl/timeseries-views';
 import View from './View';
 import { defaultUnitSelection, SetupSortingCuration, UnitMetricSelectionContext, unitMetricSelectionReducer, UnitSelectionContext, unitSelectionReducer } from '@figurl/spike-sorting-views';
 import './localStyles.css';
+import './App.css'
 
 const urlSearchParams = new URLSearchParams(window.location.search)
 const queryParams = Object.fromEntries(urlSearchParams.entries())

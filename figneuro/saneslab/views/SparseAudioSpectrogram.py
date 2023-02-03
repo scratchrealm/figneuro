@@ -7,11 +7,13 @@ from numba import jit
 class SparseAudioSpectrogram(View):
     def __init__(self, *,
         sampling_frequency: float,
-        spectrogram_data: np.ndarray
+        spectrogram_data: np.ndarray,
+        hide_toolbar: bool=False
     ) -> None:
         super().__init__('saneslab.SparseAudioSpectrogram')
         self.sampling_frequency = sampling_frequency
         self.spectrogram_data = spectrogram_data
+        self.hide_toolbar = hide_toolbar
     def to_dict(self) -> dict:
         Nf = self.spectrogram_data.shape[1]
         Nt = self.spectrogram_data.shape[0]
@@ -32,7 +34,8 @@ class SparseAudioSpectrogram(View):
             'numTimepoints': Nt,
             'samplingFrequency': self.sampling_frequency,
             'spectrogramValues': values,
-            'spectrogramIndicesDelta': indices_delta
+            'spectrogramIndicesDelta': indices_delta,
+            'hideToolbar': self.hide_toolbar
         }
         return ret
     def child_views(self) -> List[View]:
