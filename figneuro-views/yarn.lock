@@ -1394,9 +1394,9 @@
     react-sizeme "^3.0.2"
 
 "@figurl/timeseries-views@^0.2", "@figurl/timeseries-views@^0.2.1":
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/@figurl/timeseries-views/-/timeseries-views-0.2.6.tgz#5c8a76bd26e0ee2277f10e2b7daa89b821459312"
-  integrity sha512-oHsvrNAGnLT6gxotJtlXzX+DWHVwoiywMkX7mQAGep3A7JRs8UOA0tWkGdkXf9nkTPQKD+5n8XaQ7SincKc4TA==
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/@figurl/timeseries-views/-/timeseries-views-0.2.7.tgz#b845a5cf4b69489051be382c9cf46bd5e224b368"
+  integrity sha512-CUA+2xyAiJZ+C2/WrgKLN1u1Q7jYsWqw/1pXPzygD/FWvRlm9PntoTMJXan33Qz8FXhcqubkbpjiUOo+N7YRgA==
   dependencies:
     "@figurl/core-views" "^0.1"
     "@figurl/interface" "^0.1"
@@ -9630,9 +9630,9 @@ terser-webpack-plugin@^5.1.3, terser-webpack-plugin@^5.2.5:
     terser "^5.14.1"
 
 terser@^5.0.0, terser@^5.10.0, terser@^5.14.1:
-  version "5.16.2"
-  resolved "https://registry.yarnpkg.com/terser/-/terser-5.16.2.tgz#8f495819439e8b5c150e7530fc434a6e70ea18b2"
-  integrity sha512-JKuM+KvvWVqT7muHVyrwv7FVRPnmHDwF6XwoIxdbF5Witi0vu99RYpxDexpJndXt3jbZZmmWr2/mQa6HvSNdSg==
+  version "5.16.3"
+  resolved "https://registry.yarnpkg.com/terser/-/terser-5.16.3.tgz#3266017a9b682edfe019b8ecddd2abaae7b39c6b"
+  integrity sha512-v8wWLaS/xt3nE9dgKEWhNUFP6q4kngO5B8eYFUuebsu7Dw/UNAnpUod6UHo04jSSkv8TzKHjZDSd7EXdDQAl8Q==
   dependencies:
     "@jridgewell/source-map" "^0.3.2"
     acorn "^8.5.0"

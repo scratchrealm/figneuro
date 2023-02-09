@@ -24,7 +24,7 @@ type PanelProps = {
     }[]
 }
 
-const panelSpacing = 4
+const panelSpacing = 0
 
 const FiringRatesPlotView: FunctionComponent<Props> = ({data, width, height}) => {
     const {selectedUnitIds} = useSelectedUnitIds()
