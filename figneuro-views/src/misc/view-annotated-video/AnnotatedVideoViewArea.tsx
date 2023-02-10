@@ -21,16 +21,19 @@ type Props ={
 }
 
 const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoUri, annotationsUri, videoWidth, videoHeight, samplingFrequency}) => {
+	const bottomBarHeight = 30
 	const {currentTime, setCurrentTime} = useTimeseriesSelection()
 	const {visibleStartTimeSec, visibleEndTimeSec, setVisibleTimeRange} = useTimeRange()
-	const W = videoWidth * height < videoHeight * width ? videoWidth * height / videoHeight : width
-	const H = videoWidth * height < videoHeight * width ? height : videoHeight * width / videoWidth
+	const height2 = height - bottomBarHeight
+	const W = videoWidth * height2 < videoHeight * width ? videoWidth * height2 / videoHeight : width
+	const H = videoWidth * height2 < videoHeight * width ? height2 : videoHeight * width / videoWidth
+	const scale =useMemo(() => ([W / videoWidth, H / videoHeight] as [number, number]), [W, H, videoWidth, videoHeight])
 	const rect = useMemo(() => ({
 		x: (width - W)  / 2,
-		y: (height - H) / 2,
+		y: (height2 - H) / 2,
 		w: W,
 		h: H
-	}), [W, H, width, height])
+	}), [W, H, width, height2])
 	const {affineTransform, handleWheel} = useWheelZoom(rect.x, rect.y, rect.w, rect.h)
 	const handleSetTimeSec = useCallback((t: number) => {
 		setCurrentTime(t)
@@ -71,14 +74,13 @@ const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoU
 		rr = requestAnimationFrame(update)
 		return () => cancelAnimationFrame(rr)
 	}, [playing, videoUri, setCurrentTime, playbackRate])
-	const bottomBarHeight = 30
 	return (
 		<div style={{position: 'absolute', width, height}} onWheel={handleWheel}>
-			<div className="video-frame" style={{position: 'absolute', left: rect.x, top: rect.y, width: rect.w, height: rect.h - bottomBarHeight}}>
+			<div className="video-frame" style={{position: 'absolute', left: rect.x, top: rect.y, width: rect.w, height: rect.h}}>
 				{
 					videoUri && <VideoFrameView
 						width={rect.w}
-						height={rect.h - bottomBarHeight}
+						height={rect.h}
 						timeSec={currentTime}
 						setTimeSec={handleSetTimeSec}
 						src={videoUri}
@@ -88,15 +90,16 @@ const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoU
 					/>
 				}
 			</div>
-			<div className="annotations-frame" style={{position: 'absolute', left: rect.x, top: rect.y, width: rect.w, height: rect.h - bottomBarHeight}}>
+			<div className="annotations-frame" style={{position: 'absolute', left: rect.x, top: rect.y, width: rect.w, height: rect.h}}>
 				{
 					annotationsUri && <AnnotationsFrameView
 						width={rect.w}
-						height={rect.h - bottomBarHeight}
+						height={rect.h}
 						timeSec={currentTime}
 						annotationsUri={annotationsUri}
 						affineTransform={affineTransform}
 						samplingFrequency={samplingFrequency}
+						scale={scale}
 					/>
 				}
 			</div>
@@ -112,7 +115,7 @@ const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoU
 					onSelectRect={onSelectRect}
 				/>
 			</div> */}
-			<div style={{position: 'absolute', width, height: bottomBarHeight, top: height - bottomBarHeight}}>
+			<div style={{position: 'absolute', width, height: bottomBarHeight, top: height2}}>
 				{!playing && <IconButton title="Play video" disabled={playing} onClick={handlePlay}><PlayArrow /></IconButton>}
 				{playing && <IconButton title="Stop video" disabled={!playing} onClick={handleStop}><Stop /></IconButton>}
 				<PlaybackRateControl playbackRate={playbackRate} setPlaybackRate={setPlaybackRate} />

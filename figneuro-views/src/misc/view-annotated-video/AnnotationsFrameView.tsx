@@ -1,6 +1,5 @@
 import { getFileDataUrl } from "@figurl/interface";
 import { AffineTransform } from "@figurl/spike-sorting-views";
-import { win32 } from "path";
 import { FunctionComponent, useEffect, useMemo, useRef, useState } from "react";
 import AnnotationsClient, { AnnotationElement, AnnotationFrame } from "./AnnotationsClient";
 
@@ -11,6 +10,7 @@ type Props ={
 	width: number
 	height: number
 	affineTransform: AffineTransform
+	scale: [number, number]
 }
 
 // The default radius for a marker object
@@ -19,7 +19,7 @@ const defaultMarkerRadius = 6
 // The default width of a line or connector object
 const defaultLineWidth = 1.1
 
-const AnnotationsFrameView: FunctionComponent<Props> = ({annotationsUri, timeSec, width, height, affineTransform, samplingFrequency}) => {
+const AnnotationsFrameView: FunctionComponent<Props> = ({annotationsUri, timeSec, width, height, affineTransform, samplingFrequency, scale}) => {
 	const [annotationsUrl, setAnnotationsUrl] = useState<string>()
 	useEffect(() => {
 		if (annotationsUri.startsWith('sha1://')) {
@@ -73,8 +73,8 @@ const AnnotationsFrameView: FunctionComponent<Props> = ({annotationsUri, timeSec
 
 		const drawNode = (n: AnnotationElement & {type: 'node'}) => {
 			const o = {
-				x: n.data.x,
-				y: n.data.y,
+				x: n.data.x * scale[0],
+				y: n.data.y * scale[1],
 				selected: false,
 				attributes: {
 					radius: undefined,
@@ -121,12 +121,12 @@ const AnnotationsFrameView: FunctionComponent<Props> = ({annotationsUri, timeSec
 					}
 				}
 				const obj1 = {
-					x: e1.data.x,
-					y: e1.data.y
+					x: e1.data.x * scale[0],
+					y: e1.data.y * scale[1]
 				}
 				const obj2 = {
-					x: e2.data.x,
-					y: e2.data.y
+					x: e2.data.x * scale[0],
+					y: e2.data.y * scale[1]
 				}
 				let pp1 = {x: obj1.x, y: obj1.y}
 				// if ((draggingObject) && (obj1.objectId === draggingObject.object?.objectId) && (draggingObject.newPoint)) {
@@ -164,7 +164,7 @@ const AnnotationsFrameView: FunctionComponent<Props> = ({annotationsUri, timeSec
 		}
 		
 		ctxt.restore()
-	}, [affineTransform, annotationsClient, timeSec, annotationFrame, zoomScaleFactor])
+	}, [affineTransform, annotationsClient, timeSec, annotationFrame, zoomScaleFactor, scale])
 	return (
 		<div style={{position: 'absolute', width, height}}>
 			<canvas
