@@ -6,6 +6,7 @@ import { SparseAudioSpectrogramView, isSparseAudioSpectrogramViewData } from "./
 import { FiringRatesPlotView, isFiringRatesPlotViewData } from "./saneslab/view-firing-rates-plot"
 import { CameraView, isCameraViewData } from "./saneslab/view-camera"
 import { EmptyView, isEmptyViewData } from "./general/view-empty"
+import { AnnotatedVideoView, isAnnotatedVideoViewData } from "./misc/view-annotated-video"
 
 const loadView = (o: {data: any, width: number, height: number, opts: any, ViewComponent: FunctionComponent<ViewComponentProps>}) => {
     const {data, width, height} = o
@@ -28,6 +29,9 @@ const loadView = (o: {data: any, width: number, height: number, opts: any, ViewC
     }
     else if (isEmptyViewData(data)) {
         return <EmptyView data={data} width={width} height={height} />
+    }
+    else if (isAnnotatedVideoViewData(data)) {
+        return <AnnotatedVideoView data={data} width={width} height={height} />
     }
     else return undefined
 }
