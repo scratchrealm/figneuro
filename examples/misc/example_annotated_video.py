@@ -1,5 +1,5 @@
-# 2/10/23
-# https://figurl.org/f?v=gs://figurl/figneuro-1&d=sha1://05183e0d0787afdfc33fcef24116863263744415&label=Annotated%20video%20example
+# 2/11/23
+# https://figurl.org/f?v=gs://figurl/figneuro-1&d=sha1://0976e31a985e2dd235ce54e18809598ed3c9cc82&label=Annotated%20video%20example
 
 from typing import List
 import figneuro.misc.views as fmv

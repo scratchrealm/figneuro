@@ -71,26 +71,26 @@ const AnnotationsFrameView: FunctionComponent<Props> = ({annotationsUri, timeSec
 
 		const elements = annotationFrame?.e || []
 
-		const drawNode = (n: AnnotationElement & {type: 'node'}) => {
+		const drawNode = (n: AnnotationElement & {t: 'n'}) => {
 			const o = {
-				x: n.data.x * scale[0],
-				y: n.data.y * scale[1],
+				x: n.x * scale[0],
+				y: n.y * scale[1],
 				selected: false,
 				attributes: {
 					radius: undefined,
 					shape: undefined,
-					fillColor: 'black',
+					fillColor: 'magenta',
 					lineColor: 'black'
 				},
 				selectedAttributes: {
 					radius: undefined,
 					shape: undefined,
-					fillColor: 'black',
+					fillColor: 'magenta',
 					lineColor: 'black'
 				}
 			}
 			const attributes = !o.selected ? o.attributes : o.selectedAttributes || {...o.attributes, fillColor: 'orange', radius: (o.attributes.radius || defaultMarkerRadius) * 1.5}
-			const radius = (attributes.radius || defaultMarkerRadius) * zoomScaleFactor
+			const radius = (attributes.radius || defaultMarkerRadius)
 			const shape = o.attributes.shape || 'circle'
 			ctxt.lineWidth = defaultLineWidth
 			ctxt.fillStyle = attributes.fillColor || 'black'
@@ -109,24 +109,24 @@ const AnnotationsFrameView: FunctionComponent<Props> = ({annotationsUri, timeSec
 			attributes.lineColor && ctxt.stroke()
 		}
 
-		const drawEdge = (n: AnnotationElement & {type: 'edge'}) => {
-			const e1 = elements.filter(e => (e.id === n.data.id1 && e.type === 'node')).map(e => (e as AnnotationElement & {type: 'node'}))[0]
-			const e2 = elements.filter(e => (e.id === n.data.id2 && e.type === 'node')).map(e => (e as AnnotationElement & {type: 'node'}))[0]
+		const drawEdge = (n: AnnotationElement & {t: 'e'}) => {
+			const e1 = elements.filter(e => (e.i === n.i1 && e.t === 'n')).map(e => (e as AnnotationElement & {t: 'n'}))[0]
+			const e2 = elements.filter(e => (e.i === n.i2 && e.t === 'n')).map(e => (e as AnnotationElement & {t: 'n'}))[0]
 			if ((e1) && (e2)) {
 				const o = {
 					attributes: {
 						dash: [],
 						width: 1,
-						color: 'black'
+						color: 'magenta'
 					}
 				}
 				const obj1 = {
-					x: e1.data.x * scale[0],
-					y: e1.data.y * scale[1]
+					x: e1.x * scale[0],
+					y: e1.y * scale[1]
 				}
 				const obj2 = {
-					x: e2.data.x * scale[0],
-					y: e2.data.y * scale[1]
+					x: e2.x * scale[0],
+					y: e2.y * scale[1]
 				}
 				let pp1 = {x: obj1.x, y: obj1.y}
 				// if ((draggingObject) && (obj1.objectId === draggingObject.object?.objectId) && (draggingObject.newPoint)) {
@@ -154,10 +154,10 @@ const AnnotationsFrameView: FunctionComponent<Props> = ({annotationsUri, timeSec
 
 		if (annotationFrame) {
 			for (const element of annotationFrame.e) {
-				if (element.type === 'node') {
+				if (element.t === 'n') {
 					drawNode(element)
 				}
-				else if (element.type === 'edge') {
+				else if (element.t === 'e') {
 					drawEdge(element)
 				}
 			}

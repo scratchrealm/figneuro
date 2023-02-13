@@ -1,17 +1,13 @@
 export type AnnotationElement = {
-    type: 'node'
-    id: string
-    data: {
-        x: number
-        y: number
-    }
+    t: 'n' // node
+    i: string // ID
+    x: number
+    y: number
 } | {
-    type: 'edge'
-    id: string
-    data: {
-        id1: string
-        id2: string
-    }
+    t: 'e' // edge
+    i: string // ID
+    i1: string // node ID 1
+    i2: string // node ID 2
 }
 
 export type AnnotationFrame = {

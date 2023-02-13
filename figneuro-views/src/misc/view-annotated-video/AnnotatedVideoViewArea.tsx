@@ -3,7 +3,7 @@ import { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } 
 import AnnotationsFrameView from "./AnnotationsFrameView";
 // import PoseViewport from "./PoseViewport";
 import { PlayArrow, Stop } from "@mui/icons-material";
-import { FormControl, IconButton, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import { FormControl, IconButton, MenuItem, Select, SelectChangeEvent, Slider } from "@mui/material";
 import useWheelZoom from "./useWheelZoom";
 import VideoFrameView from "./VideoFrameView";
 
@@ -119,7 +119,19 @@ const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoU
 				{!playing && <IconButton title="Play video" disabled={playing} onClick={handlePlay}><PlayArrow /></IconButton>}
 				{playing && <IconButton title="Stop video" disabled={!playing} onClick={handleStop}><Stop /></IconButton>}
 				<PlaybackRateControl playbackRate={playbackRate} setPlaybackRate={setPlaybackRate} />
+				&nbsp;&nbsp;&nbsp;
+				<FormControl size="small">
+					<Slider
+						min={0}
+						max={100}
+						step={1}
+						style={{width: 300}}
+						value={currentTime}
+						onChange={(e, v) => {}}
+					/>
+				</FormControl>
 			</div>
+
 		</div>
 	)
 }

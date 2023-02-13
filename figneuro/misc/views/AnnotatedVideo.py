@@ -1,8 +1,8 @@
 from typing import List, Union
 import simplejson
 from .View import View
-import numpy as np
 import kachery_cloud as kcl
+import figurl as fig
 
 class AnnotationElement():
     def __init__(
@@ -17,18 +17,18 @@ class AnnotationElement():
         self.data = data
     def to_dict(self):
         return {
-            'type': self.type,
-            'id': self.id,
-            'data': self.data
+            't': self.type, # type
+            'i': self.id, # id
+            **fig.serialize_data(self.data) # data
         }
 
 class NodeElement(AnnotationElement):
     def __init__(self, id: str, *, x: float, y: float) -> None:
-        super().__init__(type='node', id=id, data={'x': x, 'y': y})
+        super().__init__(type='n', id=id, data={'x': x, 'y': y})
 
 class EdgeElement(AnnotationElement):
     def __init__(self, id: str, *, id1: str, id2: str) -> None:
-        super().__init__(type='edge', id=id, data={'id1': id1, 'id2': id2})
+        super().__init__(type='e', id=id, data={'i1': id1, 'i2': id2})
 
 class AnnotationFrame():
     def __init__(self, elements: List[AnnotationElement]) -> None:
