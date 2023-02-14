@@ -5,6 +5,7 @@ import AnnotationsClient, { AnnotationElement, AnnotationFrame } from "./Annotat
 
 type Props ={
 	annotationsUri: string
+	colorsForNodeIds: {[nodeId: string]: string}
 	timeSec: number | undefined
 	samplingFrequency: number
 	width: number
@@ -14,12 +15,12 @@ type Props ={
 }
 
 // The default radius for a marker object
-const defaultMarkerRadius = 6
+const defaultMarkerRadius = 4
 
 // The default width of a line or connector object
 const defaultLineWidth = 1.1
 
-const AnnotationsFrameView: FunctionComponent<Props> = ({annotationsUri, timeSec, width, height, affineTransform, samplingFrequency, scale}) => {
+const AnnotationsFrameView: FunctionComponent<Props> = ({annotationsUri, colorsForNodeIds, timeSec, width, height, affineTransform, samplingFrequency, scale}) => {
 	const [annotationsUrl, setAnnotationsUrl] = useState<string>()
 	useEffect(() => {
 		if (annotationsUri.startsWith('sha1://')) {
@@ -79,13 +80,13 @@ const AnnotationsFrameView: FunctionComponent<Props> = ({annotationsUri, timeSec
 				attributes: {
 					radius: undefined,
 					shape: undefined,
-					fillColor: 'magenta',
+					fillColor: colorsForNodeIds[n.i] || 'magenta',
 					lineColor: 'black'
 				},
 				selectedAttributes: {
 					radius: undefined,
 					shape: undefined,
-					fillColor: 'magenta',
+					fillColor: colorsForNodeIds[n.i] || 'magenta',
 					lineColor: 'black'
 				}
 			}
@@ -164,7 +165,7 @@ const AnnotationsFrameView: FunctionComponent<Props> = ({annotationsUri, timeSec
 		}
 		
 		ctxt.restore()
-	}, [affineTransform, annotationsClient, timeSec, annotationFrame, zoomScaleFactor, scale])
+	}, [affineTransform, annotationsClient, timeSec, annotationFrame, zoomScaleFactor, scale, colorsForNodeIds])
 	return (
 		<div style={{position: 'absolute', width, height}}>
 			<canvas

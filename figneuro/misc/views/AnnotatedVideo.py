@@ -34,6 +34,18 @@ class AnnotationFrame():
     def __init__(self, elements: List[AnnotationElement]) -> None:
         self.elements = elements
 
+class AnnotatedVideoNode():
+    def __init__(self, *, id: str, label: str, color_index: int) -> None:
+        self.id = id
+        self.label = label
+        self.color_index = color_index
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'label': self.label,
+            'colorIndex': self.color_index
+        }
+
 def create_annotations_uri(annotation_frames: List[AnnotationFrame]):
     frame_dicts = [{'e': [e.to_dict() for e in f.elements]} for f in annotation_frames]
     frame_jsons = [
@@ -53,12 +65,13 @@ def create_annotations_uri(annotation_frames: List[AnnotationFrame]):
 
 class AnnotatedVideo(View):
     def __init__(self, *,
-        video_uri: Union[str, None],
         video_width: int,
         video_height: int,
         video_num_frames: int,
         sampling_frequency: float,
-        annotations_uri: Union[str, None]
+        video_uri: Union[str, None]=None,
+        annotations_uri: Union[str, None]=None,
+        nodes: Union[List[AnnotatedVideoNode], None]=None
     ) -> None:
         super().__init__('misc.AnnotatedVideo')
         self.video_uri = video_uri
@@ -67,6 +80,7 @@ class AnnotatedVideo(View):
         self.video_num_frames = video_num_frames
         self.sampling_frequency = sampling_frequency
         self.annotations_uri = annotations_uri
+        self.nodes = nodes
     def to_dict(self) -> dict:
         ret = {
             'type': self.type,
@@ -79,6 +93,8 @@ class AnnotatedVideo(View):
             ret['videoUri'] = self.video_uri
         if self.annotations_uri:
             ret['annotationsUri'] = self.annotations_uri
+        if self.nodes:
+            ret['nodes'] = [n.to_dict() for n in self.nodes]
         return ret
     def child_views(self) -> List[View]:
         return []

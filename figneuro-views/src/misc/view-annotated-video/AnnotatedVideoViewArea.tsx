@@ -1,11 +1,12 @@
-import { useTimeRange, useTimeseriesSelection } from "@figurl/timeseries-views";
-import { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTimeRange, useTimeseriesSelection, TimeseriesSelectionContext } from "@figurl/timeseries-views";
+import { FunctionComponent, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import AnnotationsFrameView from "./AnnotationsFrameView";
-// import PoseViewport from "./PoseViewport";
 import { PlayArrow, Stop } from "@mui/icons-material";
-import { FormControl, IconButton, MenuItem, Select, SelectChangeEvent, Slider } from "@mui/material";
+import { Checkbox, createTheme, FormControl, FormControlLabel, IconButton, MenuItem, Select, SelectChangeEvent, Slider, ThemeProvider } from "@mui/material";
+import { AnnotatedVideoNode } from "./AnnotatedVideoViewData";
 import useWheelZoom from "./useWheelZoom";
 import VideoFrameView from "./VideoFrameView";
+import { getNodeColor } from "./getNodeColor";
 
 
 type Props ={
@@ -13,27 +14,47 @@ type Props ={
 	height: number
 	videoUri?: string
 	annotationsUri?: string
+	nodes?: AnnotatedVideoNode[]
 	videoWidth: number
 	videoHeight: number
 	samplingFrequency: number
-	// canEditPose: boolean
 	onSelectRect?: (r: {x: number, y: number, w: number, h: number}) => void
 }
 
-const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoUri, annotationsUri, videoWidth, videoHeight, samplingFrequency}) => {
+const theme = createTheme({
+	components: {
+		MuiSlider: {
+			styleOverrides: {
+				root: {
+					paddingTop: 25,
+					marginLeft: 10
+				}	
+			}
+		}
+	}
+});
+
+const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoUri, annotationsUri, nodes, videoWidth, videoHeight, samplingFrequency}) => {
 	const bottomBarHeight = 30
 	const {currentTime, setCurrentTime} = useTimeseriesSelection()
+	const {timeseriesSelection} = useContext(TimeseriesSelectionContext)
+
+	const [showAnnotations, setShowAnnotations] = useState(true)
+	const [showVideo, setShowVideo] = useState(true)
+	
 	const {visibleStartTimeSec, visibleEndTimeSec, setVisibleTimeRange} = useTimeRange()
 	const height2 = height - bottomBarHeight
-	const W = videoWidth * height2 < videoHeight * width ? videoWidth * height2 / videoHeight : width
-	const H = videoWidth * height2 < videoHeight * width ? height2 : videoHeight * width / videoWidth
+	const legendWidth = nodes ? 150 : 0
+	const width2 = width - legendWidth
+	const W = videoWidth * height2 < videoHeight * width2 ? videoWidth * height2 / videoHeight : width2
+	const H = videoWidth * height2 < videoHeight * width2 ? height2 : videoHeight * width2 / videoWidth
 	const scale =useMemo(() => ([W / videoWidth, H / videoHeight] as [number, number]), [W, H, videoWidth, videoHeight])
 	const rect = useMemo(() => ({
-		x: (width - W)  / 2,
+		x: (width2 - W)  / 2,
 		y: (height2 - H) / 2,
 		w: W,
 		h: H
-	}), [W, H, width, height2])
+	}), [W, H, width2, height2])
 	const {affineTransform, handleWheel} = useWheelZoom(rect.x, rect.y, rect.w, rect.h)
 	const handleSetTimeSec = useCallback((t: number) => {
 		setCurrentTime(t)
@@ -59,26 +80,42 @@ const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoU
 	}, [currentTime])
 	useEffect(() => {
 		if (!playing) return
-		if (videoUri) {
+		if ((videoUri) && (showVideo)) {
 			// the playing is taken care of by the video frame view
 			return
 		}
+		let canceled = false
 		const startTime = currentTimeRef.current
 		const timer = Date.now()
 		let rr = 0
 		const update = () => {
 			const elapsed = (Date.now() - timer) / 1000
 			setCurrentTime(startTime + elapsed * playbackRate)
-			rr = requestAnimationFrame(update)
+			setTimeout(() => { // apparently it's important to use a small timeout here so the controls still work (e.g., the slider)
+				if (canceled) return
+				rr = requestAnimationFrame(update)
+			}, 1)
 		}
 		rr = requestAnimationFrame(update)
-		return () => cancelAnimationFrame(rr)
-	}, [playing, videoUri, setCurrentTime, playbackRate])
+		return () => {cancelAnimationFrame(rr); canceled = true}
+	}, [playing, videoUri, setCurrentTime, playbackRate, showVideo])
+
+	const colorsForNodeIds = useMemo(() => {
+		const ret: {[nodeId: string]: string} = {}
+		if (!nodes) return ret
+		for (let i = 0; i < nodes.length; i++) {
+			let ind = nodes[i].colorIndex
+			const colorIndex = ind === undefined ? i : ind
+			ret[nodes[i].id] = getNodeColor(colorIndex)
+		}
+		return ret
+	}, [nodes])
+
 	return (
 		<div style={{position: 'absolute', width, height}} onWheel={handleWheel}>
 			<div className="video-frame" style={{position: 'absolute', left: rect.x, top: rect.y, width: rect.w, height: rect.h}}>
 				{
-					videoUri && <VideoFrameView
+					videoUri && showVideo && <VideoFrameView
 						width={rect.w}
 						height={rect.h}
 						timeSec={currentTime}
@@ -92,46 +129,55 @@ const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoU
 			</div>
 			<div className="annotations-frame" style={{position: 'absolute', left: rect.x, top: rect.y, width: rect.w, height: rect.h}}>
 				{
-					annotationsUri && <AnnotationsFrameView
+					annotationsUri && showAnnotations && <AnnotationsFrameView
 						width={rect.w}
 						height={rect.h}
 						timeSec={currentTime}
 						annotationsUri={annotationsUri}
+						colorsForNodeIds={colorsForNodeIds}
 						affineTransform={affineTransform}
 						samplingFrequency={samplingFrequency}
 						scale={scale}
 					/>
 				}
 			</div>
-			{/* <div className="pose-viewport" style={{position: 'absolute', left: rect.x, top: rect.y, width: rect.w, height: rect.h}}>
-				<PoseViewport
-					width={rect.w}
-					height={rect.h}
-					videoWidth={video.width}
-					videoHeight={video.height}
-					canEditPose={canEditPose}
-					videoSamplingFrequency={video.samplingFrequency}
-					affineTransform={affineTransform}
-					onSelectRect={onSelectRect}
-				/>
-			</div> */}
-			<div style={{position: 'absolute', width, height: bottomBarHeight, top: height2}}>
-				{!playing && <IconButton title="Play video" disabled={playing} onClick={handlePlay}><PlayArrow /></IconButton>}
-				{playing && <IconButton title="Stop video" disabled={!playing} onClick={handleStop}><Stop /></IconButton>}
-				<PlaybackRateControl playbackRate={playbackRate} setPlaybackRate={setPlaybackRate} />
-				&nbsp;&nbsp;&nbsp;
-				<FormControl size="small">
-					<Slider
-						min={0}
-						max={100}
-						step={1}
-						style={{width: 300}}
-						value={currentTime}
-						onChange={(e, v) => {}}
-					/>
-				</FormControl>
+			<div className="legend" style={{position: 'absolute', left: rect.x + rect.w, top: rect.y, width: legendWidth, height: rect.h, padding: 15}}>
+				{
+					(nodes || []).map((node, i) => (
+						<div><span style={{color: colorsForNodeIds[node.id] || 'black'}}>●</span> {node.label}</div>
+					))
+				}
 			</div>
-
+			<ThemeProvider theme={theme}>
+				<div style={{position: 'absolute', width, height: bottomBarHeight, top: height2}}>
+					{!playing && <IconButton title="Play video" disabled={playing} onClick={handlePlay}><PlayArrow /></IconButton>}
+					{playing && <IconButton title="Stop video" disabled={!playing} onClick={handleStop}><Stop /></IconButton>}
+					<PlaybackRateControl playbackRate={playbackRate} setPlaybackRate={setPlaybackRate} />
+					&nbsp;
+					<FormControl size="small">
+						<Slider
+							min={timeseriesSelection.timeseriesStartTimeSec ?? 0}
+							max={timeseriesSelection.timeseriesEndTimeSec ?? 100}
+							step={1}
+							style={{width: 300}}
+							value={currentTime || 0}
+							onChange={(e, v) => {setCurrentTime(v as number)}}
+							disabled={playing}
+						/>
+					</FormControl>
+					&nbsp;&nbsp;&nbsp;
+					<FormControlLabel
+						control={<Checkbox checked={showAnnotations} onClick={() => {setShowAnnotations(a => !a)}} />}
+						disabled={playing}
+						label="annotations"
+					/>
+					<FormControlLabel
+						control={<Checkbox checked={showVideo} onClick={() => {setShowVideo(a => !a)}} />}
+						disabled={playing}
+						label="video"
+					/>
+				</div>
+			</ThemeProvider>
 		</div>
 	)
 }

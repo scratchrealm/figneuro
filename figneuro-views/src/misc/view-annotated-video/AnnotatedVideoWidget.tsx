@@ -1,5 +1,6 @@
 import { FunctionComponent } from "react";
 import AnnotatedVideoViewArea from "./AnnotatedVideoViewArea";
+import { AnnotatedVideoNode } from "./AnnotatedVideoViewData";
 // import { colorForPointIndex } from "./PoseViewport";
 
 type Props ={
@@ -11,10 +12,11 @@ type Props ={
 	videoNumFrames: number
 	samplingFrequency: number
 	annotationsUri?: string
+	nodes?: AnnotatedVideoNode[]
 	// canEditPose: boolean
 }
 
-const AnnotatedVideoWidget: FunctionComponent<Props> = ({width, height, videoUri, videoWidth, videoHeight, videoNumFrames, samplingFrequency, annotationsUri}) => {
+const AnnotatedVideoWidget: FunctionComponent<Props> = ({width, height, videoUri, videoWidth, videoHeight, videoNumFrames, samplingFrequency, annotationsUri, nodes}) => {
 	// const topPanelHeight = 100
 	// const legendWidth = 50
 	const topPanelHeight = 0
@@ -31,6 +33,7 @@ const AnnotatedVideoWidget: FunctionComponent<Props> = ({width, height, videoUri
 					height={viewAreaHeight}
 					videoUri={videoUri}
 					annotationsUri={annotationsUri}
+					nodes={nodes}
 					videoWidth={videoWidth}
 					videoHeight={videoHeight}
 					samplingFrequency={samplingFrequency}
