@@ -1,3 +1,5 @@
+import { getFileData } from "@figurl/interface"
+
 export type AnnotationElement = {
     t: 'n' // node
     i: string // ID
@@ -22,7 +24,7 @@ class AnnotationsClient {
     #header: {recordByteLengths: number[]} | undefined
     #framePositions: number[] | undefined
     #fetchingChunks = new Set<number>()
-    constructor(private url: string) {
+    constructor(private uri: string) {
 
     }
     async initialize() {
@@ -126,16 +128,17 @@ class AnnotationsClient {
         try {
             const i1 = chunkSize * i
             const i2 = chunkSize * (i + 1)
-            const resp = await fetch(
-                this.url,
-                {
-                    method: 'GET',
-                    headers: {
-                        Range: `bytes=${i1}-${i2 - 1}`
-                    }
-                }
-            )
-            const txt = await resp.text()
+            const txt = await getFileData(this.uri, () => {}, {startByte: i1, endByte: i2, responseType: 'text'})
+            // const resp = await fetch(
+            //     this.url,
+            //     {
+            //         method: 'GET',
+            //         headers: {
+            //             Range: `bytes=${i1}-${i2 - 1}`
+            //         }
+            //     }
+            // )
+            // const txt = await resp.text()
             if (txt) {
                 this.#chunks[i] = txt
                 return this.#chunks[i]

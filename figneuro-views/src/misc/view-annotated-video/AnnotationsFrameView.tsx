@@ -21,23 +21,22 @@ const defaultMarkerRadius = 4
 const defaultLineWidth = 1.1
 
 const AnnotationsFrameView: FunctionComponent<Props> = ({annotationsUri, colorsForNodeIds, timeSec, width, height, affineTransform, samplingFrequency, scale}) => {
-	const [annotationsUrl, setAnnotationsUrl] = useState<string>()
-	useEffect(() => {
-		if (annotationsUri.startsWith('sha1://')) {
-			getFileDataUrl(annotationsUri).then((url) => {
-				setAnnotationsUrl(url)
-			}).catch(err => {
-				console.warn(`Problem getting file data url for ${annotationsUri}`)
-			})
-		}
-		else {
-			setAnnotationsUrl(annotationsUri)
-		}
-	}, [annotationsUri])
+	// const [annotationsUrl, setAnnotationsUrl] = useState<string>()
+	// useEffect(() => {
+	// 	if (annotationsUri.startsWith('sha1://')) {
+	// 		getFileDataUrl(annotationsUri).then((url) => {
+	// 			setAnnotationsUrl(url)
+	// 		}).catch(err => {
+	// 			console.warn(`Problem getting file data url for ${annotationsUri}`)
+	// 		})
+	// 	}
+	// 	else {
+	// 		setAnnotationsUrl(annotationsUri)
+	// 	}
+	// }, [annotationsUri])
 	const annotationsClient = useMemo(() => {
-		if (!annotationsUrl) return undefined
-		return new AnnotationsClient(annotationsUrl)
-	}, [annotationsUrl])
+		return new AnnotationsClient(annotationsUri)
+	}, [annotationsUri])
 	const [annotationFrame, setAnnotationFrame] = useState<AnnotationFrame | undefined>()
 	useEffect(() => {
 		setAnnotationFrame(undefined)

@@ -31,7 +31,7 @@ class View:
             for v in a:
                 ret.append(v)
         return ret
-    def url(self, *, label: str, state: Union[dict, None]=None):
+    def url(self, *, label: str, state: Union[dict, None]=None, local: Union[bool, None]=None):
         from .Box import Box
         from .LayoutItem import LayoutItem
         if self.is_layout:
@@ -55,7 +55,7 @@ class View:
             F = fig.Figure(view_url=view_url, data=data)
             if state is not None:
                 F.set_state(state)
-            url = F.url(label=label)
+            url = F.url(label=label, local=local)
             return url
 
         # Need to wrap it in a layout
