@@ -1,12 +1,13 @@
-import { useTimeRange, useTimeseriesSelection, TimeseriesSelectionContext } from "@figurl/timeseries-views";
-import { FunctionComponent, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import AnnotationsFrameView from "./AnnotationsFrameView";
+import { TimeseriesSelectionContext, useTimeseriesSelection } from "@figurl/timeseries-views";
 import { PlayArrow, Stop } from "@mui/icons-material";
 import { Checkbox, createTheme, FormControl, FormControlLabel, IconButton, MenuItem, Select, SelectChangeEvent, Slider, ThemeProvider } from "@mui/material";
+import { FunctionComponent, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AnnotatedVideoNode } from "./AnnotatedVideoViewData";
-import useWheelZoom from "./useWheelZoom";
-import VideoFrameView from "./VideoFrameView";
+import AnnotationsFrameView from "./AnnotationsFrameView";
 import { getNodeColor } from "./getNodeColor";
+import Qjb1Client from "./Qjb1View/Qjb1Client";
+import Qjb1ViewCanvas from "./Qjb1View/Qjb1ViewCanvas";
+import useWheelZoom from "./useWheelZoom";
 
 
 type Props ={
@@ -42,7 +43,7 @@ const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoU
 	const [showAnnotations, setShowAnnotations] = useState(true)
 	const [showVideo, setShowVideo] = useState(true)
 	
-	const {visibleStartTimeSec, visibleEndTimeSec, setVisibleTimeRange} = useTimeRange()
+	// const {visibleStartTimeSec, visibleEndTimeSec, setVisibleTimeRange} = useTimeRange()
 	const height2 = height - bottomBarHeight
 	const legendWidth = nodes ? 150 : 0
 	const width2 = width - legendWidth
@@ -56,16 +57,16 @@ const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoU
 		h: H
 	}), [W, H, width2, height2])
 	const {affineTransform, handleWheel} = useWheelZoom(rect.x, rect.y, rect.w, rect.h)
-	const handleSetTimeSec = useCallback((t: number) => {
-		setCurrentTime(t)
-		if ((visibleStartTimeSec !== undefined) && (visibleEndTimeSec !== undefined)) {
-			if ((t < visibleStartTimeSec) || (t > visibleEndTimeSec)) {
-				let delta = t - (visibleStartTimeSec + visibleEndTimeSec) / 2
-				if (visibleStartTimeSec + delta < 0) delta = -visibleStartTimeSec
-				setVisibleTimeRange(visibleStartTimeSec + delta, visibleEndTimeSec + delta)
-			}
-		}
-	}, [visibleStartTimeSec, visibleEndTimeSec, setVisibleTimeRange, setCurrentTime])
+	// const handleSetTimeSec = useCallback((t: number) => {
+	// 	setCurrentTime(t)
+	// 	if ((visibleStartTimeSec !== undefined) && (visibleEndTimeSec !== undefined)) {
+	// 		if ((t < visibleStartTimeSec) || (t > visibleEndTimeSec)) {
+	// 			let delta = t - (visibleStartTimeSec + visibleEndTimeSec) / 2
+	// 			if (visibleStartTimeSec + delta < 0) delta = -visibleStartTimeSec
+	// 			setVisibleTimeRange(visibleStartTimeSec + delta, visibleEndTimeSec + delta)
+	// 		}
+	// 	}
+	// }, [visibleStartTimeSec, visibleEndTimeSec, setVisibleTimeRange, setCurrentTime])
 	const [playing, setPlaying] = useState<boolean>(false)
 	const [playbackRate, setPlaybackRate] = useState<number>(1)
 	const handlePlay = useCallback(() => {
@@ -80,10 +81,10 @@ const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoU
 	}, [currentTime])
 	useEffect(() => {
 		if (!playing) return
-		if ((videoUri) && (showVideo)) {
-			// the playing is taken care of by the video frame view
-			return
-		}
+		// if ((videoUri) && (showVideo)) {
+		// 	// the playing is taken care of by the video frame view
+		// 	return
+		// }
 		let canceled = false
 		const startTime = currentTimeRef.current
 		const timer = Date.now()
@@ -111,10 +112,14 @@ const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoU
 		return ret
 	}, [nodes])
 
+	const qjb1Client = useMemo(() => (
+		videoUri ? new Qjb1Client(videoUri) : undefined
+	), [videoUri])
+
 	return (
 		<div style={{position: 'absolute', width, height}} onWheel={handleWheel}>
 			<div className="video-frame" style={{position: 'absolute', left: rect.x, top: rect.y, width: rect.w, height: rect.h}}>
-				{
+				{/* {
 					videoUri && showVideo && <VideoFrameView
 						width={rect.w}
 						height={rect.h}
@@ -125,6 +130,16 @@ const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoU
 						playing={playing}
 						playbackRate={playbackRate}
 					/>
+				} */}
+				{
+					videoUri && showVideo && qjb1Client && (currentTime !== undefined) && (
+						<Qjb1ViewCanvas
+							qjb1Client={qjb1Client}
+							currentTime={currentTime}
+							width={rect.w}
+							height={rect.h}
+						/>
+					)
 				}
 			</div>
 			<div className="annotations-frame" style={{position: 'absolute', left: rect.x, top: rect.y, width: rect.w, height: rect.h}}>
@@ -152,7 +167,7 @@ const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoU
 				<div style={{position: 'absolute', width, height: bottomBarHeight, top: height2}}>
 					{!playing && <IconButton title="Play video" disabled={playing} onClick={handlePlay}><PlayArrow /></IconButton>}
 					{playing && <IconButton title="Stop video" disabled={!playing} onClick={handleStop}><Stop /></IconButton>}
-					<PlaybackRateControl playbackRate={playbackRate} setPlaybackRate={setPlaybackRate} />
+					<PlaybackRateControl disabled={playing} playbackRate={playbackRate} setPlaybackRate={setPlaybackRate} />
 					&nbsp;
 					<FormControl size="small">
 						<Slider
@@ -182,13 +197,13 @@ const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoU
 	)
 }
 
-const PlaybackRateControl: FunctionComponent<{playbackRate: number, setPlaybackRate: (x: number) => void}> = ({playbackRate, setPlaybackRate}) => {
+const PlaybackRateControl: FunctionComponent<{playbackRate: number, setPlaybackRate: (x: number) => void, disabled?: boolean}> = ({playbackRate, setPlaybackRate, disabled}) => {
 	const handleChange = useCallback((e: SelectChangeEvent) => {
 		setPlaybackRate(parseFloat(e.target.value))
 	}, [setPlaybackRate])
 	return (
 		<FormControl size="small">
-			<Select onChange={handleChange} value={playbackRate + ''}>
+			<Select disabled={disabled} onChange={handleChange} value={playbackRate + ''}>
 				<MenuItem key={0.1} value={0.1}>0.1x</MenuItem>
 				<MenuItem key={0.25} value={0.25}>0.25x</MenuItem>
 				<MenuItem key={0.5} value={0.5}>0.5x</MenuItem>
