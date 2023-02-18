@@ -1,4 +1,4 @@
-import { isEqualTo, isNumber, validateObject, optional, isString, isArrayOf } from "@figurl/core-utils"
+import { isEqualTo, isNumber, isString, optional, validateObject } from "@figurl/core-utils"
 
 export type AnnotatedVideoNode = {
     id: string
@@ -14,7 +14,7 @@ export type AnnotatedVideoViewData = {
     videoNumFrames: number
     samplingFrequency: number
     annotationsUri?: string
-    nodes?: AnnotatedVideoNode[]
+    nodesUri?: string
 }
 
 export const isAnnotatedVideoViewData = (x: any): x is AnnotatedVideoViewData => {
@@ -26,10 +26,6 @@ export const isAnnotatedVideoViewData = (x: any): x is AnnotatedVideoViewData =>
         videoNumFrames: isNumber,
         samplingFrequency: isNumber,
         annotationsUri: optional(isString),
-        nodes: optional(isArrayOf(y => (validateObject(y, {
-            id: isString,
-            label: isString,
-            colorIndex: optional(isNumber)
-        }))))
+        nodesUri: optional(isString)
     })
 }

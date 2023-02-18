@@ -1,6 +1,7 @@
+import { getFileData } from "@figurl/interface"
 import { useTimeseriesSelection, useTimeseriesSelectionInitialization } from "@figurl/timeseries-views"
-import { FunctionComponent, useEffect } from "react"
-import { AnnotatedVideoViewData } from "./AnnotatedVideoViewData"
+import { FunctionComponent, useEffect, useState } from "react"
+import { AnnotatedVideoNode, AnnotatedVideoViewData } from "./AnnotatedVideoViewData"
 import AnnotatedVideoWidget from "./AnnotatedVideoWidget"
 
 type Props = {
@@ -10,7 +11,7 @@ type Props = {
 }
 
 const AnnotatedVideoView: FunctionComponent<Props> = ({data, width, height}) => {
-	const {samplingFrequency, videoUri, videoWidth, videoHeight, videoNumFrames, annotationsUri, nodes} = data
+	const {samplingFrequency, videoUri, videoWidth, videoHeight, videoNumFrames, annotationsUri, nodesUri} = data
     const {currentTime, setCurrentTime} = useTimeseriesSelection()
     useTimeseriesSelectionInitialization(0, videoNumFrames / samplingFrequency)
     useEffect(() => {
@@ -18,6 +19,13 @@ const AnnotatedVideoView: FunctionComponent<Props> = ({data, width, height}) => 
             setTimeout(() => setCurrentTime(0), 1) // for some reason we need to use setTimeout for initialization - probably because we are waiting for useTimeseriesSelectionInitialization
         }
     }, [currentTime, setCurrentTime])
+    const [nodes, setNodes] = useState<AnnotatedVideoNode[]>()
+    useEffect(() => {
+        if (!nodesUri) return
+        getFileData(nodesUri, () => {}, {responseType: 'json'}).then(x => {
+            setNodes(x)
+        })
+    }, [nodesUri])
 	return (
         <AnnotatedVideoWidget
             width={width}

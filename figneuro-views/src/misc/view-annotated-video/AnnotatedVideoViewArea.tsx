@@ -159,7 +159,7 @@ const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoU
 			<div className="legend" style={{position: 'absolute', left: rect.x + rect.w, top: rect.y, width: legendWidth, height: rect.h, padding: 15}}>
 				{
 					(nodes || []).map((node, i) => (
-						<div><span style={{color: colorsForNodeIds[node.id] || 'black'}}>●</span> {node.label}</div>
+						<div key={i}><span style={{color: colorsForNodeIds[node.id] || 'black'}}>●</span> {node.label}</div>
 					))
 				}
 			</div>

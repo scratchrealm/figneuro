@@ -1,4 +1,3 @@
-import { getFileDataUrl } from "@figurl/interface";
 import { AffineTransform } from "@figurl/spike-sorting-views";
 import { FunctionComponent, useEffect, useMemo, useRef, useState } from "react";
 import AnnotationsClient, { AnnotationElement, AnnotationFrame } from "./AnnotationsClient";
