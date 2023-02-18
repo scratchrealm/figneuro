@@ -11,7 +11,7 @@ def create_qjb1(*, input: str, output: str, quality: int, duration_sec: Union[fl
     height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
     width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
     fps = vid.get(cv2.CAP_PROP_FPS)
-    num_frames = vid.get(cv2.CAP_PROP_FRAME_COUNT)
+    num_frames = int(vid.get(cv2.CAP_PROP_FRAME_COUNT))
 
     print(f'height/width: {height}/{width}')
     print(f'fps: {fps}')

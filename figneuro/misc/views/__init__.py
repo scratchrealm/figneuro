@@ -1,1 +1,1 @@
-from .AnnotatedVideo import AnnotatedVideo, AnnotationElement, AnnotationFrame, create_annotations_uri, NodeElement, EdgeElement, AnnotatedVideoNode
+from .AnnotatedVideo import AnnotatedVideo, AnnotationElement, AnnotationFrame, create_annotations_uri, create_annotations_jsonl_text, NodeElement, EdgeElement, AnnotatedVideoNode

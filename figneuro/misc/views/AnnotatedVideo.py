@@ -47,6 +47,10 @@ class AnnotatedVideoNode():
         }
 
 def create_annotations_uri(annotation_frames: List[AnnotationFrame]):
+    text = create_annotations_jsonl_text(annotation_frames)
+    return kcl.store_text(text, label='annotations.jsonl')
+
+def create_annotations_jsonl_text(annotation_frames: List[AnnotationFrame]):
     frame_dicts = [{'e': [e.to_dict() for e in f.elements]} for f in annotation_frames]
     frame_jsons = [
         simplejson.dumps(
@@ -61,7 +65,7 @@ def create_annotations_uri(annotation_frames: List[AnnotationFrame]):
         separators=(',', ':'), indent=None, allow_nan=False, sort_keys=True
     )
     text = '\n'.join([header_record_json] + frame_jsons)
-    return kcl.store_text(text, label='annotations.jsonl')
+    return text
 
 class AnnotatedVideo(View):
     def __init__(self, *,
