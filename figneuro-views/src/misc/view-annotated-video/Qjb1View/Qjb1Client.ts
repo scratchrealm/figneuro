@@ -1,6 +1,7 @@
 import { getFileData } from "@figurl/interface"
 
 const expectedInitialText = 'qjb1.ecv9vh5lt\n'
+const initialChunkSize = 1000 * 1000 * 0.5 // use a smaller first chunk so we can load the first frames more quickly
 const chunkSize = 1000 * 1000 * 4 // 4MB chunks. Is this a good choice?
 
 type Qjb1Header = {
@@ -120,17 +121,17 @@ class Qjb1Client {
         }
     }
     async _fetchData(b1: number, b2: number): Promise<ArrayBuffer | undefined> {
-        const i1 = Math.floor(b1 / chunkSize)
-        const i2 = Math.floor(b2 / chunkSize)
+        const i1 = Math.floor(b1 < initialChunkSize ? 0 : 1 + (b1 - initialChunkSize) / chunkSize)
+        const i2 = Math.floor(b2 < initialChunkSize ? 0 : 1 + (b2 - initialChunkSize) / chunkSize)
         const pieces: ArrayBuffer[] = []
         for (let i = i1; i <= i2; i++) {
             let ch = await this._fetchChunk(i)
             if (!ch) return undefined
             if (i === i2) {
-                ch = ch.slice(0, b2 - i * chunkSize)
+                ch = ch.slice(0, b2 - (b2 < initialChunkSize ? 0 : initialChunkSize + (i - 1) * chunkSize))
             }
             if (i === i1) {
-                ch = ch.slice(b1 - i * chunkSize)
+                ch = ch.slice(b1 - (b1 < initialChunkSize ? 0 : initialChunkSize + (i - 1) * chunkSize))
             }
             pieces.push(ch)
         }
@@ -138,7 +139,7 @@ class Qjb1Client {
         this._fetchChunk(i2 + 1)
         return concatenateArrayBuffers(pieces)
     }
-    async _fetchChunk(i: number) {
+    async _fetchChunk(i: number): Promise<ArrayBuffer | undefined> {
         if (this.#chunks[i]) return this.#chunks[i]
         if (this.#fetchingChunks.has(i)) {
             while (this.#fetchingChunks.has(i)) {
@@ -148,8 +149,8 @@ class Qjb1Client {
         }
         this.#fetchingChunks.add(i)
         try {
-            const i1 = chunkSize * i
-            const i2 = chunkSize * (i + 1)
+            const i1 = i === 0 ? 0 : initialChunkSize + chunkSize * (i - 1)
+            const i2 = i + 1 === 0 ? 0 : initialChunkSize + chunkSize * (i + 1 - 1)
             const content = await getFileData(this.uri, () => {}, {startByte: i1, endByte: i2, responseType: 'binary'})
             this.#chunks[i] = content
             return this.#chunks[i]

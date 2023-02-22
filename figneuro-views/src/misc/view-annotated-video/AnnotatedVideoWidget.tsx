@@ -23,10 +23,10 @@ const AnnotatedVideoWidget: FunctionComponent<Props> = ({width, height, videoUri
 	const legendWidth = 0
 	
 	const viewAreaWidth = width - legendWidth
-	const viewAreaHeight = height - topPanelHeight - 10
+	const viewAreaHeight = height - topPanelHeight - 5
 
 	return (
-		<div style={{position: 'absolute', width, height}}>
+		<div className="AnnotatedVideoWidget" style={{position: 'absolute', width, height, overflow: 'hidden'}}>
 			<div style={{position: 'absolute', top: topPanelHeight, width: viewAreaWidth, height: viewAreaHeight}}>
 				<AnnotatedVideoViewArea
 					width={viewAreaWidth}

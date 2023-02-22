@@ -68,8 +68,8 @@ function App() {
               <View
                 data={data}
                 opts={opts}
-                width={width - 10}
-                height={height - 5}
+                width={width - 3}
+                height={height - 3}
               />
             </SetupSortingCuration>
           </UnitMetricSelectionContext.Provider>

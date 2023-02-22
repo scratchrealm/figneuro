@@ -117,7 +117,7 @@ const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoU
 	), [videoUri])
 
 	return (
-		<div style={{position: 'absolute', width, height}} onWheel={handleWheel}>
+		<div className="AnnotatedVideoViewArea" style={{position: 'absolute', width, height}} onWheel={handleWheel}>
 			<div className="video-frame" style={{position: 'absolute', left: rect.x, top: rect.y, width: rect.w, height: rect.h}}>
 				{/* {
 					videoUri && showVideo && <VideoFrameView
