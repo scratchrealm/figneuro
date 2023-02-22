@@ -32,11 +32,14 @@ const useWheelZoom = (x: number, y: number, width: number, height: number) => {
         // test to see if we should snap back to identity
         const p00 = applyAffineTransform(newTransform, {x: x, y: y})
         const p11 = applyAffineTransform(newTransform, {x: x + width, y: y + height})
-        if ((x <= p00.x) && (p00.x < x + width) && (y <= p00.y) && (p00.y < y + height)) {
-            if ((x <= p11.x) && (p11.x < x + width) && (y <= p11.y) && (p11.y < y + height)) {
-                newTransform = identityAffineTransform
-            }
+        if ((p11.x - p00.x < width) && (p11.y - p00.y < height)) {
+            newTransform = identityAffineTransform
         }
+        // if ((x <= p00.x) && (p00.x < x + width) && (y <= p00.y) && (p00.y < y + height)) {
+        //     if ((x <= p11.x) && (p11.x < x + width) && (y <= p11.y) && (p11.y < y + height)) {
+        //         newTransform = identityAffineTransform
+        //     }
+        // }
 
         setAffineTransform(newTransform)
         return false

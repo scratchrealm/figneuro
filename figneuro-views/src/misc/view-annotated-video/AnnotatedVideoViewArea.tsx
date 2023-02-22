@@ -138,6 +138,7 @@ const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoU
 							currentTime={currentTime}
 							width={rect.w}
 							height={rect.h}
+							affineTransform={affineTransform}
 						/>
 					)
 				}
