@@ -15,6 +15,7 @@ export type AnnotatedVideoViewData = {
     samplingFrequency: number
     annotationsUri?: string
     nodesUri?: string
+    positionDecodeFieldUri?: string
 }
 
 export const isAnnotatedVideoViewData = (x: any): x is AnnotatedVideoViewData => {
@@ -26,6 +27,7 @@ export const isAnnotatedVideoViewData = (x: any): x is AnnotatedVideoViewData =>
         videoNumFrames: isNumber,
         samplingFrequency: isNumber,
         annotationsUri: optional(isString),
-        nodesUri: optional(isString)
+        nodesUri: optional(isString),
+        positionDecodeFieldUri: optional(isString)
     })
 }

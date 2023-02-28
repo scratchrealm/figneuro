@@ -11,7 +11,7 @@ type Props = {
 }
 
 const AnnotatedVideoView: FunctionComponent<Props> = ({data, width, height}) => {
-	const {samplingFrequency, videoUri, videoWidth, videoHeight, videoNumFrames, annotationsUri, nodesUri} = data
+	const {samplingFrequency, videoUri, videoWidth, videoHeight, videoNumFrames, annotationsUri, nodesUri, positionDecodeFieldUri} = data
     const {currentTime, setCurrentTime} = useTimeseriesSelection()
     useTimeseriesSelectionInitialization(0, videoNumFrames / samplingFrequency)
     useEffect(() => {
@@ -33,6 +33,7 @@ const AnnotatedVideoView: FunctionComponent<Props> = ({data, width, height}) => 
             videoUri={videoUri}
             annotationsUri={annotationsUri}
             nodes={nodes}
+            positionDecodeFieldUri={positionDecodeFieldUri}
             videoWidth={videoWidth}
             videoHeight={videoHeight}
             videoNumFrames={videoNumFrames}

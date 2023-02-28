@@ -13,10 +13,11 @@ type Props ={
 	samplingFrequency: number
 	annotationsUri?: string
 	nodes?: AnnotatedVideoNode[]
+	positionDecodeFieldUri?: string
 	// canEditPose: boolean
 }
 
-const AnnotatedVideoWidget: FunctionComponent<Props> = ({width, height, videoUri, videoWidth, videoHeight, videoNumFrames, samplingFrequency, annotationsUri, nodes}) => {
+const AnnotatedVideoWidget: FunctionComponent<Props> = ({width, height, videoUri, videoWidth, videoHeight, videoNumFrames, samplingFrequency, annotationsUri, nodes, positionDecodeFieldUri}) => {
 	// const topPanelHeight = 100
 	// const legendWidth = 50
 	const topPanelHeight = 0
@@ -34,6 +35,7 @@ const AnnotatedVideoWidget: FunctionComponent<Props> = ({width, height, videoUri
 					videoUri={videoUri}
 					annotationsUri={annotationsUri}
 					nodes={nodes}
+					positionDecodeFieldUri={positionDecodeFieldUri}
 					videoWidth={videoWidth}
 					videoHeight={videoHeight}
 					samplingFrequency={samplingFrequency}

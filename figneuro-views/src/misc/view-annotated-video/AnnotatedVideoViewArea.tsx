@@ -5,6 +5,7 @@ import { FunctionComponent, useCallback, useContext, useEffect, useMemo, useRef,
 import { AnnotatedVideoNode } from "./AnnotatedVideoViewData";
 import AnnotationsFrameView from "./AnnotationsFrameView";
 import { getNodeColor } from "./getNodeColor";
+import PositionDecodeFieldFrameView from "./PositionDecodeFieldFrameView";
 import Qjb1Client from "./Qjb1View/Qjb1Client";
 import Qjb1ViewCanvas from "./Qjb1View/Qjb1ViewCanvas";
 import useWheelZoom from "./useWheelZoom";
@@ -16,6 +17,7 @@ type Props ={
 	videoUri?: string
 	annotationsUri?: string
 	nodes?: AnnotatedVideoNode[]
+	positionDecodeFieldUri?: string
 	videoWidth: number
 	videoHeight: number
 	samplingFrequency: number
@@ -35,12 +37,13 @@ const theme = createTheme({
 	}
 });
 
-const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoUri, annotationsUri, nodes, videoWidth, videoHeight, samplingFrequency}) => {
-	const bottomBarHeight = 30
+const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoUri, annotationsUri, nodes, positionDecodeFieldUri, videoWidth, videoHeight, samplingFrequency}) => {
+	const bottomBarHeight = 40
 	const {currentTime, setCurrentTime} = useTimeseriesSelection()
 	const {timeseriesSelection} = useContext(TimeseriesSelectionContext)
 
 	const [showAnnotations, setShowAnnotations] = useState(true)
+	const [showPositionDecodeField, setShowPositionDecodeField] = useState(true)
 	const [showVideo, setShowVideo] = useState(true)
 	
 	// const {visibleStartTimeSec, visibleEndTimeSec, setVisibleTimeRange} = useTimeRange()
@@ -143,6 +146,19 @@ const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoU
 					)
 				}
 			</div>
+			<div className="position-decode-field-frame" style={{position: 'absolute', left: rect.x, top: rect.y, width: rect.w, height: rect.h}}>
+				{
+					positionDecodeFieldUri && showPositionDecodeField && <PositionDecodeFieldFrameView
+						width={rect.w}
+						height={rect.h}
+						timeSec={currentTime}
+						positionDecodeFieldUri={positionDecodeFieldUri}
+						affineTransform={affineTransform}
+						samplingFrequency={samplingFrequency}
+						scale={scale}
+					/>
+				}
+			</div>
 			<div className="annotations-frame" style={{position: 'absolute', left: rect.x, top: rect.y, width: rect.w, height: rect.h}}>
 				{
 					annotationsUri && showAnnotations && <AnnotationsFrameView
@@ -182,16 +198,21 @@ const AnnotatedVideoViewArea: FunctionComponent<Props> = ({width, height, videoU
 						/>
 					</FormControl>
 					&nbsp;&nbsp;&nbsp;
-					<FormControlLabel
+					{annotationsUri && <FormControlLabel
 						control={<Checkbox checked={showAnnotations} onClick={() => {setShowAnnotations(a => !a)}} />}
 						disabled={playing}
 						label="annotations"
-					/>
-					<FormControlLabel
+					/>}
+					{positionDecodeFieldUri && <FormControlLabel
+						control={<Checkbox checked={showPositionDecodeField} onClick={() => {setShowPositionDecodeField(a => !a)}} />}
+						disabled={playing}
+						label="position decode field"
+					/>}
+					{videoUri && <FormControlLabel
 						control={<Checkbox checked={showVideo} onClick={() => {setShowVideo(a => !a)}} />}
 						disabled={playing}
 						label="video"
-					/>
+					/>}
 				</div>
 			</ThemeProvider>
 		</div>

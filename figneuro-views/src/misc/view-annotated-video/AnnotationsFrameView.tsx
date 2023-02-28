@@ -44,7 +44,7 @@ const AnnotationsFrameView: FunctionComponent<Props> = ({annotationsUri, colorsF
 		const frameIndex = Math.round(timeSec * samplingFrequency)
 		if (frameIndex < 0) return
 		let canceled = false
-		annotationsClient.get(frameIndex).then(f => {
+		annotationsClient.getFrame(frameIndex).then(f => {
 			if (canceled) return
 			setAnnotationFrame(f)
 		})
